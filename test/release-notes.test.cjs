@@ -337,8 +337,10 @@ test('the notes file we actually ship fits the toast', () => {
 test('electron-builder points the release notes at a file that exists', () => {
   // Without this field electron-updater silently falls back to the atom feed,
   // which is the whole bug. A typo here fails open and looks like nothing.
+  // CRLF-tolerant: a Windows checkout has \r\n line endings, and a `$`-anchored
+  // regex must not treat the \r as part of the value.
   const cfg = fs.readFileSync(path.join(__dirname, '..', 'electron-builder.yml'), 'utf8');
-  const match = cfg.match(/^releaseInfo:\n\s+releaseNotesFile:\s*(\S+)\s*$/m);
+  const match = cfg.match(/^releaseInfo:\r?\n\s+releaseNotesFile:\s*(\S+)\s*$/m);
 
   assert.ok(match, 'releaseInfo.releaseNotesFile is missing from electron-builder.yml');
   assert.ok(

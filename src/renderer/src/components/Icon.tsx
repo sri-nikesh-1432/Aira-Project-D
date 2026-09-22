@@ -7,7 +7,7 @@ export type IconName =
   | 'gear' | 'plus' | 'x' | 'check' | 'arrow-right' | 'pause' | 'play'
   | 'bell' | 'folder' | 'terminal' | 'code' | 'web' | 'mcp' | 'sparkle'
   | 'expand' | 'minimize' | 'clock' | 'mic' | 'ledger' | 'info' | 'sidebar'
-  | 'image' | 'edit' | 'git';
+  | 'image' | 'edit' | 'git' | 'chat';
 
 interface IconDef {
   ink: string;     // primary color path d
@@ -86,6 +86,11 @@ const paths: Record<IconName, IconDef> = {
   git: {
     accentColor: 'var(--cth-coral)',
     ink:   'M5 1h3v1h-3zM4 2h1v1h-1zM8 2h1v1h-1zM4 3h1v1h-1zM8 3h1v1h-1zM5 4h3v1h-3zM6 5h1v1h-1zM6 6h1v1h-1zM9 6h3v1h-3zM6 7h1v1h-1zM8 7h1v1h-1zM12 7h1v1h-1zM6 8h3v1h-3zM12 8h1v1h-1zM6 9h1v1h-1zM9 9h3v1h-3zM6 10h1v1h-1zM5 11h3v1h-3zM4 12h1v1h-1zM8 12h1v1h-1zM4 13h1v1h-1zM8 13h1v1h-1zM5 14h3v1h-3z'
+  },
+  // Speech bubble — the Command Center's natural-language directive surface.
+  chat: {
+    accentColor: 'var(--cth-sky)',
+    ink:   'M2 3h12v8h-5l-3 3v-3H2z'
   },
   code: {
     accentColor: 'var(--cth-sky)',

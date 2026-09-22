@@ -1,28 +1,19 @@
 <div align="center">
 
-<img src="./docs/logo.png" alt="Munder Difflin — agent harness to run an office of your clones" width="180">
+<img src="./docs/logo.png" alt="AIRA — one AI intelligence, an office of planet agents" width="180">
 
-# Munder Difflin
+# AIRA
 
-### Agent harness to run an office of your clones
+### One female AI intelligence. One input box. She handles everything else.
 
-<p>
-  <a href="https://trendshift.io/repositories/46562" target="_blank" rel="noopener noreferrer"><img alt="GitHub Trending — #1 Repository of the Day" src="./docs/badge-github-trending.png" width="250" height="54"></a>
-  <a href="https://www.producthunt.com/products/munder-difflin?embed=true&utm_source=badge-top-post-badge&utm_medium=badge&utm_campaign=badge-munder-difflin" target="_blank" rel="noopener noreferrer"><img alt="Munder Difflin — #5 Product of the Day on Product Hunt" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1221363&theme=light&period=daily" width="250" height="54"></a>
-</p>
+**AIRA analyzes every request you type, spawns only the planet agents the task needs, coordinates their collaboration, and delivers the result.** You never need to understand agents, CLIs, terminals, or orchestration — if you do, AIRA is too complicated.
 
-<img src="./docs/media/floor.png" alt="The Munder Difflin office floor: agents at desks working in parallel, with the Command Center and a live agent terminal on the right" width="1240">
+Wraps **free and local CLI engines** — **Claude Code**, **OpenCode**, **Gemini CLI**, **Qwen**, and more, with bring-your-own keys and local LLMs. AIRA (the central female AI character at the heart of the office) decides who works: Mercury for research, Mars for architecture, Earth for implementation, Neptune for testing, and the rest of the planet roster wake only when a task reaches them.
+
+Underneath, AIRA keeps the proven Munder Difflin foundation: real terminal-agent CLIs as fully-capable agents, a hive mind with memory, and a Pixi.js office floor where the work is visible.
 
 **Free, open source and performant** — a multi-agent harness that works with the
-subscriptions you already pay for, on their hourly limits. It turns the terminal coding CLI
-you already run into a clone of you, one that keeps working while you're away and
-coordinates a whole office of agents on your own machine.
-
-Wraps [Claude Code](https://claude.com/claude-code), Antigravity (Gemini), OpenAI Codex,
-**xAI Grok**, **Kimi Code**, **Gemini CLI**, **Qwen**, **OpenCode**, **Crush**,
-**pi.dev**, **GitHub Copilot CLI**, and **Cursor** — with bring-your-own keys and local LLMs.
-Agents that message, route, and remember, coordinated by **your clone** (Michael) and
-visualized as avatars at work on a shared office floor.
+subscriptions you already pay for, on their hourly limits.
 
 <p>
   <em>Electron · React · TypeScript · Pixi.js · xterm.js · node-pty</em>
@@ -31,24 +22,22 @@ visualized as avatars at work on a shared office floor.
 <p>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-F4D35E.svg?style=flat-square&labelColor=6E1423"></a>
   <a href="./CHANGELOG.md"><img alt="Version: 0.4.6" src="https://img.shields.io/badge/version-0.4.6-F4D35E.svg?style=flat-square&labelColor=6E1423"></a>
-  <a href="https://github.com/chaitanyagiri/munder-difflin/releases"><img alt="Downloads across all releases" src="https://img.shields.io/github/downloads/chaitanyagiri/munder-difflin/total?style=flat-square&label=downloads&color=F4D35E&labelColor=6E1423"></a>
+  <a href="https://github.com/sri-nikesh-1432/Aira-Project-D/releases"><img alt="Downloads across all releases" src="https://img.shields.io/github/downloads/sri-nikesh-1432/Aira-Project-D/total?style=flat-square&label=downloads&color=F4D35E&labelColor=6E1423"></a>
   <img alt="Status: pre-release" src="https://img.shields.io/badge/status-pre--release-F4F1EA.svg?style=flat-square&labelColor=6E1423">
   <img alt="Platform: macOS | Windows | Linux" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-F4F1EA.svg?style=flat-square&labelColor=6E1423">
   <a href="./CONTRIBUTING.md"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-F4D35E.svg?style=flat-square&labelColor=6E1423"></a>
-  <a href="https://munderdiffl.in/blog/"><img alt="Blog" src="https://img.shields.io/badge/blog-guides%20%26%20postmortems-F4D35E.svg?style=flat-square&labelColor=6E1423"></a>
-  <a href="https://discord.gg/SEDzP5ZPk5"><img alt="Discord" src="https://img.shields.io/badge/Discord-join%20the%20office-F4D35E.svg?style=flat-square&labelColor=6E1423"></a>
 </p>
 
 <br>
 
 <!-- Inline player renders on github.com (raw URL required; relative paths only link). -->
-<video src="https://github.com/chaitanyagiri/munder-difflin/raw/main/docs/media/hero.mp4" controls muted loop playsinline width="820">
-  <a href="https://github.com/chaitanyagiri/munder-difflin/raw/main/docs/media/hero.mp4">▶ Watch the floor — Munder Difflin running a hive of Claude Code agents</a>
+<video src="https://github.com/sri-nikesh-1432/Aira-Project-D/raw/main/docs/media/hero.mp4" controls muted loop playsinline width="820">
+  <a href="https://github.com/sri-nikesh-1432/Aira-Project-D/raw/main/docs/media/hero.mp4">▶ Watch the floor — AIRA running a hive of agent planets</a>
 </video>
 
 <br><br>
 
-**[⬇ Download for macOS, Windows or Linux](https://github.com/chaitanyagiri/munder-difflin/releases/latest)**
+**[⬇ Download for macOS, Windows or Linux](https://github.com/sri-nikesh-1432/Aira-Project-D/releases/latest)**
 
 <sub>macOS builds are signed and notarized. You do not need to build from source to use it.</sub>
 
@@ -57,12 +46,12 @@ visualized as avatars at work on a shared office floor.
 ---
 
 > [!NOTE]
-> **The world's best agents. The world's worst paper company.**
-> Munder Difflin takes the terminal-agent CLIs you already run — `claude`, `agy`, `codex`, `grok`,
+> **One assistant. One input box. A whole office of specialists.**
+> AIRA takes the terminal-agent CLIs you already run — `claude`, `agy`, `codex`, `grok`,
 > `kimi`, `qwen`, `opencode`, `crush`, `pi`, and `copilot` — and turns them
 > into a self-coordinating team: each agent gets long-term memory, a mailbox, and a desk on a 2D
-> office floor — and **your clone** (Michael) routes work between them while you watch. He's the
-> boss of the floor; you're still the boss of him.
+> office floor — and **AIRA** routes work between them while you watch. She's the
+> boss of the floor; you're still the boss of her.
 
 ## Contents
 
@@ -104,9 +93,10 @@ Plus **bring your own keys** and **local models** through Ollama, LM Studio or v
 
 ## What it is
 
-Munder Difflin is a desktop app that wraps **real terminal-agent CLIs** as fully-capable agents,
-wires them into a **hive mind**, and puts **your clone** in charge — Michael, the one agent *you*
-talk to in order to get things done. Under the hood it runs the **fastest memory layer in the
+AIRA is a desktop app that wraps **real terminal-agent CLIs** as fully-capable agents,
+wires them into a **hive mind**, and puts **one central intelligence** in charge — AIRA, the one agent *you*
+talk to in order to get things done. She analyzes every request, decides which planets are
+needed, and delegates; you never pick agents yourself. Under the hood it runs the **fastest memory layer in the
 world** so every agent remembers what it learns and recalls it instantly.
 
 - **Every terminal is an agent.** Each `claude`, `agy`, `codex`, `grok`, `kimi`, `qwen`, `opencode`, `crush`, `pi`, `copilot`, or custom session runs as a real
@@ -122,19 +112,19 @@ world** so every agent remembers what it learns and recalls it instantly.
 
 ```
             you ── talk to ──►  ┌─────────────┐
-                                │  GOD agent  │  orchestrator / supervisor
-                                │ (Michael's  │  roster · routing · adjudication
-                                │   office)   │  blackboard · task ledger
+                                │    AIRA     │  orchestrator / supervisor
+                                │ (her office)│  analyze · plan · delegate
+                                │             │  monitor · review · deliver
                                 └──────┬──────┘
-                                       │ assigns · routes · escalates
+                                       │ analyzes · delegates · reviews
               ┌────────────────────────┼────────────────────────┐
               ▼                         ▼                         ▼
         ┌───────────┐            ┌───────────┐            ┌───────────┐
-        │  agent A  │  message   │  agent B  │  message   │  agent C  │
-        │ provider  │ ─────────► │ provider  │ ─────────► │ provider  │
+        │  MERCURY  │  message   │   MARS    │  message   │  EARTH    │
+        │ research  │ ─────────► │  architect│ ─────────► │ implement │
         │  + memory │            │  + memory │            │  + memory │
         └───────────┘            └───────────┘            └───────────┘
-              └──────── shared hive: memory · mailbox · blackboard · log ───────┘
+              └──── spawned only when the task needs them · shared hive ─────┘
 ```
 
 1. **You spawn agents** — each is a normal terminal process (`claude`, `agy`, `codex`, or custom)
@@ -159,12 +149,12 @@ terminal/event plane, and [`DESIGN.md`](./DESIGN.md) for the visual system.
 
 ### Talk to one agent, not twelve
 
-Michael is your clone and the only agent you brief. He assigns the work, routes the traffic, and
+AIRA is the only agent you brief. She analyzes the request, assigns the work, routes the traffic, and
 escalates the few things that actually need you.
 
 </td>
 <td width="50%">
-  <a href="https://github.com/chaitanyagiri/munder-difflin/raw/main/docs/media/demo/orchestrator.mp4"><img src="./docs/media/demo/orchestrator-poster.jpg" alt="Briefing Michael, the orchestrator agent, from the Command Center" width="100%"></a>
+  <a href="https://github.com/sri-nikesh-1432/Aira-Project-D/raw/main/docs/media/demo/orchestrator.mp4"><img src="./docs/media/demo/orchestrator-poster.jpg" alt="Briefing AIRA, the central intelligence, from the Command Center" width="100%"></a>
 </td>
 </tr>
 <tr>
@@ -173,7 +163,7 @@ escalates the few things that actually need you.
 ### Hire an agent in a few clicks
 
 Pick the CLI, the model and the autonomy, give it a desk, and it starts working. Import a
-ready made role from the [Agent Gallery](https://munderdiffl.in/hires/) if you would rather not
+ready made role from the Agent Gallery if you would rather not
 start from scratch.
 
 </td>
@@ -217,7 +207,7 @@ Click any desk to read that terminal live, and type straight back into it.
 
 </td>
 <td width="50%">
-  <a href="https://github.com/chaitanyagiri/munder-difflin/raw/main/docs/media/demo/agents.mp4"><img src="./docs/media/demo/agents-poster.jpg" alt="Agents working in parallel on the office floor" width="100%"></a>
+  <a href="https://github.com/sri-nikesh-1432/Aira-Project-D/raw/main/docs/media/demo/agents.mp4"><img src="./docs/media/demo/agents-poster.jpg" alt="Agents working in parallel on the office floor" width="100%"></a>
 </td>
 </tr>
 <tr>
@@ -230,7 +220,7 @@ than sending you to a docs page.
 
 </td>
 <td width="50%">
-  <a href="https://github.com/chaitanyagiri/munder-difflin/raw/main/docs/media/demo/setup.mp4"><img src="./docs/media/demo/setup-poster.jpg" alt="The first run setup wizard" width="100%"></a>
+  <a href="https://github.com/sri-nikesh-1432/Aira-Project-D/raw/main/docs/media/demo/setup.mp4"><img src="./docs/media/demo/setup-poster.jpg" alt="The first run setup wizard" width="100%"></a>
 </td>
 </tr>
 </table>
@@ -238,7 +228,7 @@ than sending you to a docs page.
 **The floor**
 - **Every terminal is a real agent.** Claude Code, Antigravity (Gemini), OpenAI Codex, xAI Grok, Kimi Code, Gemini CLI, Qwen, OpenCode, Crush, pi.dev, GitHub Copilot CLI, Cursor, or a custom command — each in its own `node-pty` PTY, rendered with xterm.js.
 - **Every agent is an avatar.** A Pixi.js office floor where agents walk to stations, envelopes fly desk to desk, and avatar state reflects real work.
-- **A GOD orchestrator you talk to.** It routes tasks, adjudicates traffic, and escalates only what needs a human. Or press **Talk** and run the floor by voice.
+- **A GOD orchestrator you talk to.** AIRA analyzes every request, routes tasks, spawns only the planets a task needs, and escalates only what needs a human. Or press **Talk** and run the floor by voice.
 - **Per-agent git worktrees.** Optional isolation so parallel agents never collide on branches.
 
 **Memory & coordination**
@@ -257,12 +247,12 @@ than sending you to a docs page.
 - **Built-in Monaco IDE** — file tree, editor tabs, save, plus CHANGES · HISTORY · COMPARE git rails with commit graph, diffs, branch compare, and guarded checkout. All fs/git access brokered through main.
 
 **Getting work in and out**
-- **Slack & webhooks** — message a channel or POST a webhook; Michael can spawn an ephemeral worker, reply in-thread, and tear it down.
-- **Shareable hires + Agent Gallery** — import a role from a `munderdifflin://hire` link; import only pre-fills the form, a human still spawns it. Browse roles at the [Agent Gallery](https://munderdiffl.in/hires/).
-- **BYOK keys + local LLMs** — per-provider keys in a write-only secret broker, plus Ollama / LM Studio / vLLM base URLs. Guides: [open models](https://munderdiffl.in/blog/run-munder-difflin-on-open-models/) · [Mac Mini](https://munderdiffl.in/blog/run-munder-difflin-on-a-mac-mini/).
+- **Slack & webhooks** — message a channel or POST a webhook; AIRA can spawn an ephemeral worker, reply in-thread, and tear it down.
+- **Shareable hires + Agent Gallery** — import a role from an `aira://hire` link; import only pre-fills the form, a human still spawns it.
+- **BYOK keys + local LLMs** — per-provider keys in a write-only secret broker, plus Ollama / LM Studio / vLLM base URLs.
 - **Updates in one click**: the title-bar badge runs the real update. It downloads the build for your machine, then restarts and installs it, and it reads `latest` once a check confirms you are current. A manual download is the fallback for when the updater cannot fetch the build itself. The first run afterwards opens that release's notes as a designed page rather than a version number.
 - **Your language**: English, Simplified Chinese and Arabic, with right to left layout for Arabic. English is the default and nothing changes until you pick another one in Settings. The app does not read your OS locale. All three app fonts ship inside the bundle, so nothing is fetched at boot.
-- **Prerequisites** — one Settings page showing which supporting tools (uv, git, Node, MemPalace, each agent CLI) you have, what each is for, and a button that asks Michael to install what is missing.
+- **Prerequisites** — one Settings page showing which supporting tools (uv, git, Node, MemPalace, each agent CLI) you have, what each is for, and a button that asks AIRA to install what is missing.
 
 > [!NOTE]
 > **Status: v0.4.6, the release where the app stops assuming everyone reads English left to right.**
@@ -287,16 +277,14 @@ than sending you to a docs page.
 > **If you're on 0.3.8, update:** that build's usage-limit guard never released the agents it held,
 > and it has been removed entirely.
 > macOS (signed & notarized), Windows, and Linux builds are on the
-> [releases page](https://github.com/chaitanyagiri/munder-difflin/releases/latest).
+> [releases page](https://github.com/sri-nikesh-1432/Aira-Project-D/releases/latest).
 
-<div align="right">(<a href="#munder-difflin">↑ back to top</a>)</div>
-
-## Getting started
+<div align="right">(<a href="#aira">↑ back to top</a>)</div>
 
 ### Download the app
 
 **Most people want this one.** Signed and notarized macOS builds, plus Windows and Linux, are on
-the [latest release](https://github.com/chaitanyagiri/munder-difflin/releases/latest). Install it,
+the [latest release](https://github.com/sri-nikesh-1432/Aira-Project-D/releases/latest). Install it,
 open it, and the wizard takes you the rest of the way. You do not need Node, a toolchain, or this
 repository.
 
@@ -327,14 +315,16 @@ Everything below is for contributors and for people who want to run an unrelease
 ### Install & run
 
 ```bash
-git clone https://github.com/chaitanyagiri/munder-difflin.git
-cd munder-difflin
+git clone https://github.com/sri-nikesh-1432/Aira-Project-D.git
+cd Aira-Project-D
 npm install        # postinstall rebuilds node-pty against Electron's ABI
-npm run dev        # launches the Electron app with hot reload
+npm start          # launches the Electron app with hot reload (Electron IS the backend)
 ```
 
-On first launch you'll go through the onboarding wizard, then land on the floor. Use **Add agent** to
-spawn your first session — the GOD agent seats itself in Michael's office automatically.
+On first launch you'll go through the **Initialize Datta** wizard — pick the folder where AIRA keeps
+her workspace — then land on the floor. Ask AIRA anything in the input box; she analyzes the
+request and spawns only the planets the task needs. The GOD agent seats itself in her office
+automatically.
 
 ### Other scripts
 
@@ -359,7 +349,7 @@ the product rather than the codebase. Also see [`HIVE.md`](./HIVE.md) for the mu
 [`SPEC.md`](./SPEC.md) for the terminal and event plane, and [`DESIGN.md`](./DESIGN.md) for the
 visual system.
 
-<div align="right">(<a href="#munder-difflin">↑ back to top</a>)</div>
+<div align="right">(<a href="#aira">↑ back to top</a>)</div>
 
 ## Roadmap
 
@@ -375,12 +365,12 @@ Full history in [`CHANGELOG.md`](./CHANGELOG.md).
 
 Next up:
 
-- [ ] **More chat integrations** — Telegram and richer chat bridges that pipe a channel into Michael's queue and route replies back out.
+- [ ] **More chat integrations** — Telegram and richer chat bridges that pipe a channel into AIRA's queue and route replies back out.
 - [ ] **More engines & integration templates** — keep growing the engine roster and the integrations registry.
 - [ ] **Fuller avatar coverage** — drive the remaining station visits and tool-bubbles entirely from real hook events.
 - [ ] **Durable layout & command history** — extend persistence to agent layout and per-session history.
 
-<div align="right">(<a href="#munder-difflin">↑ back to top</a>)</div>
+<div align="right">(<a href="#aira">↑ back to top</a>)</div>
 
 ## Contributing
 
@@ -399,17 +389,17 @@ first areas: wiring real hook events, the add-agent flow, the config drawer, and
 Questions, bugs, or want to show off your office? Join the Discord: **<https://discord.gg/SEDzP5ZPk5>**. Add your Discord handle to a PR and you'll get the `employee of the month` role when it merges.
 
 **Looking for somewhere to start?** The
-[`good first issue`](https://github.com/chaitanyagiri/munder-difflin/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[`good first issue`](https://github.com/sri-nikesh-1432/Aira-Project-D/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 list is kept stocked with small, self contained work that has a clear finish line.
 
-**Everyone whose code is in Munder Difflin is listed in [`CONTRIBUTORS.md`](./CONTRIBUTORS.md).**
+**Everyone whose code is in AIRA is listed in [`CONTRIBUTORS.md`](./CONTRIBUTORS.md).**
 If that is you, it is yours to point at. The list is generated from the pull requests themselves and
 updates on its own, so you appear without having to ask. It also names the contributions that are in
 `main` but that GitHub shows as closed rather than merged, because that was our mistake to record
 and not theirs to explain.
 
 <a href="./CONTRIBUTORS.md">
-  <img src="https://contrib.rocks/image?repo=chaitanyagiri/munder-difflin" alt="Munder Difflin contributors">
+  <img src="https://contrib.rocks/image?repo=sri-nikesh-1432/Aira-Project-D" alt="AIRA contributors">
 </a>
 
 ## Telemetry
@@ -432,8 +422,8 @@ source — forks compile with no key and send nothing) are documented in
 
 The **source code** is licensed under the **MIT License** — see [`LICENSE`](./LICENSE). The MIT grant
 covers the code only; the bundled pixel art is licensed separately from LimeZu and is carved out in
-[`LICENSE-ASSETS`](./LICENSE-ASSETS). *Munder Difflin* is an affectionate parody and is not affiliated with NBC's *The Office* or
-Dunder Mifflin.
+[`LICENSE-ASSETS`](./LICENSE-ASSETS). AIRA builds on the Munder Difflin foundation — an affectionate parody
+that is not affiliated with NBC's *The Office* or Dunder Mifflin.
 
 ## Acknowledgements
 

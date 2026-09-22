@@ -178,7 +178,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   // at the config-write boundary AND at ensureHarnessHome's mkdir, so every
   // downstream reader still sees one absolute path. No new IPC surface.
   useEffect(() => {
-    if (!home) setHome('~/HarnessAgents');
+    if (!home) setHome('~/AIRAWorkspace');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -415,9 +415,9 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                         Each option is a <strong>CLI engine</strong> (Claude Code, Codex,
                         Antigravity/Gemini, or a local proxy like Qwen). Engines marked
                         INSTALLED are already on this machine; INSTALLS ON FIRST RUN means the app
-                        sets it up when Michael first starts.
-                        <strong> Your clone</strong> (Michael) is the engine that orchestrates the whole
-                        hive. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired
+                        sets it up when AIRA first starts.
+                        <strong> AIRA</strong> ({godName}) is the engine that orchestrates the whole
+                        office. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired
                         per agent later.
                       </Trans>
                     )}

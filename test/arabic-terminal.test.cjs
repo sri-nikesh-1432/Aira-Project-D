@@ -13,7 +13,11 @@ const loadTs = require('./load-ts.cjs');
 
 const { arabicJoinRanges, isArabicCp } = loadTs('src/renderer/src/terminal/arabicJoiner.ts');
 const root = path.join(__dirname, '..');
-const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+// UTF-8 reads; `nl2` splits on ANY newline (LF or CRLF — this checkout may be
+// either), so source-shape assertions work on both platforms.
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8').replace(/\r\n/g, '\n');
+/** First newline-terminated block of `s` (up to the first "\n}\n"), CRLF-safe. */
+const nl2 = (s) => s.replace(/\r\n/g, '\n');
 
 const HELLO_AR = 'مرحبا'; // 5 Arabic letters, U+0645 U+0631 U+062D U+0628 U+0627
 
@@ -134,7 +138,7 @@ test('turning it off is a real undo, not a terminal rebuild', () => {
   // A terminal's scrollback lives only in xterm's buffer and the pty will not
   // resend it, so recreating one to apply a setting would silently eat the
   // user's history. Every step of enableArabicRendering has to be reversible.
-  const src = read('src/renderer/src/components/terminalPool.ts');
+  const src = nl2(read('src/renderer/src/components/terminalPool.ts'));
   const off = src.slice(src.indexOf('function disableArabicRendering'));
   const body = off.slice(0, off.indexOf('\n}\n'));
   assert.match(body, /deregisterCharacterJoiner/, 'the joiner is never removed');

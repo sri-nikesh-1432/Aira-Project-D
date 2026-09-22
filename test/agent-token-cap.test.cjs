@@ -37,7 +37,10 @@ test('consecutive agent caps survive an interleaved config update', () => {
     jim: 100,
     pam: 200
   });
-  assert.deepEqual(config.registeredRepos, ['/workspace/project']);
+  // path.resolve/normalize spell the fixture the platform's way (C:\workspace\…
+  // on Windows) — the assertion is about SURVIVAL of the cap map across an
+  // interleaved write, not about slash style.
+  assert.deepEqual(config.registeredRepos, [path.resolve('/workspace/project')]);
 });
 
 test('setting and clearing caps use the latest persisted map', () => {

@@ -10,6 +10,11 @@ const {
   roleForHiveSpawn
 } = loadTs('src/shared/agentRole.ts');
 
+// AIRA is the orchestrator's identity (`shared/planets.ts`). Asserted against
+// the config rather than a literal so a reworded title cannot drift from the
+// role fallback the spawn path actually writes.
+const { AIRA } = loadTs('src/shared/planets.ts');
+
 test('status captions are not durable roles', () => {
   for (const text of ['on standby', 'standby', 'idle', 'awaiting', 'a fresh harness', 'reconnecting…', '']) {
     assert.equal(isDurableRole(text), false, text);
@@ -22,7 +27,7 @@ test('preferredAgentRole keeps a hire role over standby', () => {
   assert.equal(preferredAgentRole('on standby', hire), hire);
   assert.equal(preferredAgentRole(hire, 'on standby'), hire);
   assert.equal(preferredAgentRole('on standby', 'idle', true), 'on standby');
-  assert.equal(preferredAgentRole(undefined, undefined, true), 'orchestrator (god)');
+  assert.equal(preferredAgentRole(undefined, undefined, true), AIRA.role);
 });
 
 test('roleForHiveSpawn omits a transient roster caption', () => {
@@ -33,6 +38,6 @@ test('roleForHiveSpawn omits a transient roster caption', () => {
   );
   assert.equal(
     roleForHiveSpawn({ description: 'on standby', isGod: true }),
-    'orchestrator (god)'
+    AIRA.role
   );
 });

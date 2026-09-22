@@ -6,6 +6,7 @@ import { PixelButton } from './PixelButton';
 import { SpritePortrait } from './SpritePortrait';
 import { PtyTerminalView } from './PtyTerminalView';
 import { MessageQueueComposer } from './MessageQueueComposer';
+import { CommandCenterChat } from './CommandCenterChat';
 import { TasksKanban } from './TasksKanban';
 import { AskMeTab } from './AskMeTab';
 import { TriggersTab } from './triggers/TriggersTab';
@@ -46,7 +47,9 @@ import { useRtl } from '@/i18n/useDirection';
 // Both the AskMe (#human) tab and the Triggers tab live here. Triggers replaced
 // the old Schedules tab: schedules are now one of four trigger types, and the
 // whole surface lives in ./triggers (see src/shared/triggers.ts for the contract).
-type CCTab = 'terminal' | 'floor' | 'tasks' | 'human' | 'triggers' | 'trigger-history'
+// 'command' is the DEFAULT surface: a natural-language directive board (AIRA's
+// conversation threads + a composer). The classic terminal stays one click away.
+type CCTab = 'command' | 'terminal' | 'floor' | 'tasks' | 'human' | 'triggers' | 'trigger-history'
   | 'memory' | 'graph' | 'activity' | 'skills' | 'workers';
 
 /** Fallback denominator for the per-agent token meter when no floor token budget
@@ -66,6 +69,7 @@ interface GHIssue {
 
 /** Canonical tab order. Not every entry is always shown — see `visibleTabs`. */
 const TABS: { key: CCTab; labelKey: string; icon: Parameters<typeof Icon>[0]['name'] }[] = [
+  { key: 'command', labelKey: 'commandCenter.tabs.command', icon: 'chat' },
   { key: 'terminal', labelKey: 'commandCenter.tabs.terminal', icon: 'terminal' },
   { key: 'floor', labelKey: 'commandCenter.tabs.floor', icon: 'mcp' },
   { key: 'tasks', labelKey: 'commandCenter.tabs.tasks', icon: 'check' },
@@ -85,7 +89,9 @@ const TABS: { key: CCTab; labelKey: string; icon: Parameters<typeof Icon>[0]['na
  *  cols/rows and corrupt the display. */
 export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent; fullscreen?: boolean }) {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<CCTab>('terminal');
+  // The Command Center opens on the natural-language directive board, not a
+  // terminal — AIRA is talked to, the terminal stays a toggle away.
+  const [tab, setTab] = useState<CCTab>('command');
   // The trigger-history ledger has nothing to say until an outside party can
   // reach us, so its tab appears only once an org key or a webhook exists. This
   // is the first config-gated tab in the panel: TABS stays the canonical order
@@ -95,7 +101,7 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
   const showHistory = useStore(triggerHistoryVisible);
   // Never leave the panel parked on a tab that has just been hidden.
   useEffect(() => {
-    if (!showHistory && tab === 'trigger-history') setTab('terminal');
+    if (!showHistory && tab === 'trigger-history') setTab('command');
   }, [showHistory, tab]);
   const visibleTabs = TABS.filter((t) => t.key !== 'trigger-history' || showHistory);
 
@@ -291,6 +297,9 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
 
       {/* Body */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        {tab === 'command' && (
+          <CommandCenterChat agent={agent} onOpenTerminal={() => setTab('terminal')} />
+        )}
         {tab === 'terminal' && (
           isFullscreenedHere ? (
             <Centered>{t('commandCenter.terminalFullscreen')}</Centered>
@@ -567,7 +576,7 @@ function FloorTab({ seed }: { seed: { text: string; seq: number } }) {
     setDispatchMsg(res.ok
       ? suggested
         ? t('commandCenter.sentToWithSuggestion', { godName, name: suggested.name })
-        : t('commandCenter.sentToMichael', { godName })
+        : t('commandCenter.sentToAira', { godName })
       : t('commandCenter.dispatchFailed', { error: res.error ?? '?' }));
     setTimeout(() => setDispatchMsg(null), 4000);
   };
@@ -638,13 +647,13 @@ function FloorTab({ seed }: { seed: { text: string; seq: number } }) {
 
   return (
     <Scroll>
-      <Section title={t('commandCenter.dispatchViaMichael', { godName: godName.toUpperCase() })}>
+      <Section title={t('commandCenter.dispatchViaAira', { godName: godName.toUpperCase() })}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
           <span style={{ fontFamily: 'var(--cth-font-display)', fontSize: 8, color: 'var(--cth-ink-500)', flexShrink: 0 }}>
             {t('commandCenter.suggestedOwner')}
           </span>
           <Select value={dispatchTo} onChange={setDispatchTo}>
-            <option value="">{t('commandCenter.michaelDecides', { godName })}</option>
+            <option value="">{t('commandCenter.airaDecides', { godName })}</option>
             {agents.filter((a) => !a.isGod).map((a) => (
               <option key={a.id} value={a.id}>{a.name}</option>
             ))}
@@ -902,11 +911,34 @@ function FloorTab({ seed }: { seed: { text: string; seq: number } }) {
                   disabled={restarting === a.id}
                   onClick={async () => {
                     const currentProvider = inferAgentProvider(a.command, a.provider);
-                    if (engineProvider !== currentProvider) {
+                    // Confirm on a MODEL change too, not only a provider change:
+                    // this control now moves the whole office, so swapping the
+                    // model silently would restart every planet's session.
+                    if (engineProvider !== currentProvider || (engineModel ?? undefined) !== (a.model ?? undefined)) {
                       if (!window.confirm(t('commandCenter.confirmRestartEngine', { name: a.name }))) return;
                     }
+                    // ONE ACTIVE ENGINE FOR THE WHOLE OFFICE. AIRA's engine is the
+                    // office's engine: persisting it here is what every planet
+                    // inherits at spawn. Then make the running floor match —
+                    // planets that are asleep get their saved recipe retargeted
+                    // (nothing to lose: they have no live session), and planets
+                    // that are up are respawned through this same, already-tested
+                    // restart path. The confirm above has already told the human
+                    // what they are giving up.
                     await window.cth.updateConfig({ godProvider: engineProvider, godModel: engineModel });
                     await restartWithModel(a, engineModel, { provider: engineProvider, resume: false });
+                    try {
+                      const cfg = await window.cth.getConfig();
+                      useStore.getState().retargetRestorableEngine({
+                        command: buildSpawnCommand(cfg, engineModel, engineProvider).trim(),
+                        provider: engineProvider,
+                        model: engineModel
+                      });
+                    } catch { /* best-effort: the recipes it refreshes are inert */ }
+                    for (const planet of useStore.getState().agents) {
+                      if (planet.isGod || planet.isAssistant || !planet.ptyId) continue;
+                      await restartWithModel(planet, engineModel, { provider: engineProvider, resume: false });
+                    }
                   }}
                 >
                   {restarting === a.id ? t('common.restarting') : t('commandCenter.apply')}

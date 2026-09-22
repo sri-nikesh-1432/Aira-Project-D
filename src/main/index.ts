@@ -19,6 +19,7 @@ import {
 } from './config';
 import { listDir, readFileText, readFileBinary, writeFileText, statAbs, expandTilde } from './fs';
 import { normalizeWeekly, weeklyDelayMs } from '../shared/weeklySchedule';
+import { PLANETS } from '../shared/planets';
 import {
   getBranch, getStatus, getLog, getBranches, getAheadBehind, isRepo, getDiff, mainRepoRoot,
   addWorktree, removeWorktree, worktreeHasUnintegratedWork, worktreeIsGcSafe,
@@ -458,7 +459,16 @@ function teardownPty(id: string): void {
     // PTY never leaves an orphan loopback listener. No-op for non-proxy agents.
     try { hive.stopProxyBridge(agentId); } catch (e) { console.error('[hive] stopProxyBridge failed:', e); }
     if (hive.enabled()) {
-      try { hive.setArchived(agentId, true); } catch (e) { console.error('[hive] setArchived failed:', e); }
+      // A planet that simply closed its PTY (crash, quit, manual stop) PARKs —
+      // dormant but addressable, so god can route it work and the renderer can
+      // wake it on first assignment. A non-planet (god/workers/user agents)
+      // keeps the original behavior: archived until a real respawn.
+      const rec = hive.registry().agents[agentId];
+      if (PLANET_IDS.has(agentId) && rec && !rec.isGod) {
+        try { hive.setParked(agentId, true); } catch (e) { console.error('[hive] setParked failed:', e); }
+      } else {
+        try { hive.setArchived(agentId, true); } catch (e) { console.error('[hive] setArchived failed:', e); }
+      }
     }
   }
   // 2) Remove the isolated worktree, if any. Non-blocking; errors are logged.
@@ -882,6 +892,11 @@ function syncContextTriggers(): void {
   }
 }
 
+/** The nine AIRA planet ids. Planets are the only agents that PARK (dormant but
+ *  addressable) instead of archiving when their PTY closes, and the only ones
+ *  pre-registered lazily at boot. */
+const PLANET_IDS: ReadonlySet<string> = new Set(PLANETS.map((p) => p.agentId));
+
 /** Startup migration (#57/#58): archive every agent entry that is `archived:false`
  *  but has NO live PTY. This runs in bootstrapHiveServices, BEFORE the renderer can
  *  respawn anything, so at this point NO agent owns a PTY — every `archived:false`
@@ -899,6 +914,9 @@ function archiveOrphanedAgents(): void {
   try {
     const reg = hive.registry();
     for (const [id, a] of Object.entries(reg.agents)) {
+      // Parked planets are dormant by design (no live PTY, still addressable) —
+      // they are NOT stale orphans, and the boot sweep must leave them alone.
+      if (a.parked) continue;
       if (a.archived) continue;
       if (id === reg.godId) continue;        // god is never archived
       if (ptyForAgent(id)) continue;         // has a live PTY → genuinely active
@@ -907,6 +925,37 @@ function archiveOrphanedAgents(): void {
     }
   } catch (e) {
     console.error('[migration] archiveOrphanedAgents failed:', e);
+  }
+}
+
+/** Lazy/on-demand planet registration: pre-register all nine planets as PARKED
+ *  (dormant, zero-resource — no PTY, no provider, no model) so god can route
+ *  mail straight to their inboxes and the renderer wakes them on first
+ *  assignment. Runs BEFORE archiveOrphanedAgents; it also repairs a planet the
+ *  orphan sweep of a pre-park boot wrongly archived (planets are definitions,
+ *  not closable-tab workers — a user closing a planet parks it, only god keeps
+ *  an explicit registry archive). Idempotent + best-effort. */
+function ensureParkedPlanets(): void {
+  if (!hive.enabled()) return;
+  try {
+    const cfg = readConfig();
+    const cwd = cfg.registeredRepos?.[0] ?? cfg.harnessHome ?? homedir();
+    const provider = cfg.godProvider;
+    const started = Date.now();
+    for (const planet of PLANETS) {
+      if (!planet.enabled) continue; // disabled planets stay unregistered, like never-hired
+      hive.preRegisterParked({
+        id: planet.agentId,
+        name: planet.displayName,
+        provider,
+        role: planet.specialization,
+        cwd,
+        isGod: false
+      });
+    }
+    console.log(`[migration] parked ${PLANETS.length} planets (${Date.now() - started}ms) — none spawned`);
+  } catch (e) {
+    console.error('[migration] ensureParkedPlanets failed:', e);
   }
 }
 
@@ -2212,10 +2261,10 @@ async function handleHireLink(link: string): Promise<void> {
 // exe+args form or the registration points at electron.exe with no entry.
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('munderdifflin', process.execPath, [resolve(process.argv[1])]);
+    app.setAsDefaultProtocolClient('aira', process.execPath, [resolve(process.argv[1])]);
   }
 } else {
-  app.setAsDefaultProtocolClient('munderdifflin');
+  app.setAsDefaultProtocolClient('aira');
 }
 
 // Deep links on Windows/Linux arrive as the argv of a SECOND process — take the
@@ -2232,7 +2281,7 @@ if (!gotInstanceLock) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
     }
-    const link = argv.find((a) => a.startsWith('munderdifflin://'));
+    const link = argv.find((a) => a.startsWith('aira://') || a.startsWith('munderdifflin://'));
     if (link) void handleHireLink(link);
   });
 }
@@ -2292,7 +2341,7 @@ function createWindow(opts: { floor?: boolean } = {}): BrowserWindow {
     ...(geom && geom.x !== undefined && geom.y !== undefined ? { x: geom.x, y: geom.y } : {}),
     minWidth: MIN_WIN.width,
     minHeight: MIN_WIN.height,
-    title: isFloor ? 'Munder Difflin — Floor' : 'Munder Difflin',
+    title: isFloor ? 'AIRA — Floor' : 'AIRA',
     backgroundColor: '#FFF8E7',
     titleBarStyle: 'hiddenInset',
     show: false,
@@ -5072,6 +5121,7 @@ function bootstrapHiveServices(): void {
     platform: process.platform
   });
   control.replaceAutoDeliveryPauses(readConfig().autoDeliveryPausedAgents ?? []);
+  ensureParkedPlanets(); // lazy planets: parked registry rows + inboxes, no spawns
   archiveOrphanedAgents(); // #57/#58: archive stale archived:false entries with no live PTY
   hive.startRouter();
   startEphemeralWorkerWatcher(); // poll HIVE_ROOT/spawn-requests → ephemeral workers
@@ -5293,7 +5343,7 @@ app.whenReady().then(() => {
   void loadModelCatalog(MODEL_CATALOG_CACHE()).catch(() => { /* never fatal */ });
 
   // A cold-start deep link (Windows/Linux) rides in on OUR argv.
-  const startupHireLink = process.argv.find((a) => a.startsWith('munderdifflin://'));
+  const startupHireLink = process.argv.find((a) => a.startsWith('aira://') || a.startsWith('munderdifflin://'));
   if (startupHireLink) void handleHireLink(startupHireLink);
 
   // Hand every spawned agent the path to the Slack reply discovery file via the

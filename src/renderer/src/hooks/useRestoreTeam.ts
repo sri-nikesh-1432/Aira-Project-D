@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { useStore, type Agent } from '@/store/store';
 import { buildSpawnCommand, inferAgentProvider, tokenizeCommand, type HarnessConfig } from '@/store/config';
 import { roleForHiveSpawn } from '@shared/agentRole';
+import { PLANETS } from '@shared/planets';
 
 /** "Restore team" — respawn every worker from the previous session.
  *
@@ -21,6 +22,17 @@ let autoRestoring = false;
  *  component: `useRestoreTeam` is mounted from both the floor strip and the
  *  fullscreen rail, and without this each of them would kick off its own. */
 let autoStarted = false;
+/** Whether the wake-on-message listener is wired. The hook mounts twice (floor
+ *  strip + fullscreen rail); only the first mount subscribes, and the last one
+ *  out unsubscribes. */
+let wakeWired = false;
+/** Planets with a wake in flight — guards overlapping route events from double-
+ *  spawning the same planet (god can route a wave of messages in one tick). */
+const waking = new Set<string>();
+/** The nine AIRA planet ids. Planets are LAZY: they show up pre-seeded as
+ *  restorable spawn-recipes, but never auto-restore at boot — they only wake
+ *  when AIRA routes work to one of them. */
+const PLANET_IDS: ReadonlySet<string> = new Set(PLANETS.map((p) => p.agentId));
 const listeners = new Set<() => void>();
 
 /** How long to wait after boot before restoring on our own.
@@ -66,22 +78,131 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
   const restoreNote = useSyncExternalStore(subscribe, getNote, getNote);
   const isAutoRestoring = useSyncExternalStore(subscribe, getAutoRestoring, getAutoRestoring);
 
+  /** Per-run outcome tallies, shared by every spawnOne call in a run so the run
+   *  ALWAYS leaves a visible trace (restored / already-live / failures). */
+  const tal: { restored: number; alreadyLive: number; failures: string[] } = { restored: 0, alreadyLive: 0, failures: [] };
+
+  /** Respawn ONE restorable agent with its ORIGINAL agent id, cwd, model and
+   *  command — the hive workspace (memory.md, inbox, registry entry) reattaches
+   *  by itself, no memory transplant needed. Shared by the boot restore (all
+   *  agents), the manual restore click (all), and the wake-on-message effect
+   *  (one planet, ON DEMAND — this is the lazy-spawn path). Returns the revived
+   *  Agent card, or null when the agent is already live / unspawnable. */
+  const spawnOne = async (a: Agent): Promise<Agent | null> => {
+    // Missing a spawn recipe (an old entry persisted before `command`, with no
+    // config to rebuild one) — keep it restorable and SAY why rather than
+    // silently dropping it; silent removal read as "nothing happened".
+    const provider = inferAgentProvider(a.command, a.provider);
+    const command = (a.command ?? '').trim() || (config ? buildSpawnCommand(config, a.model, provider) : '');
+    if (!command || !a.cwd) {
+      tal.failures.push(`${a.name}: no saved command`);
+      return null;
+    }
+    // The card may have been restored (or dismissed) between the read and this
+    // spawn — never spawn a duplicate of an agent already on the floor.
+    if (useStore.getState().agents.some((x) => x.id === a.id)) return null;
+    try {
+      const [exe, ...args] = tokenizeCommand(command);
+      const ptyId = a.ptyId ?? `pty-${a.id}`;
+      // An isolated agent's worktree SURVIVES an app restart on disk (it's only
+      // torn down on per-tab close / mid-session exit, not on quit). So re-enter
+      // that exact worktree as the cwd rather than re-isolating — `git worktree
+      // add` would conflict with the existing path/branch, and re-isolating would
+      // also lose the worktree's uncommitted work. cwd = the worktree means
+      // resume + seedSessionTranscript land in the CORRECT checkout.
+      // But the user may have manually pruned/deleted the worktree between runs —
+      // gitIsRepo (git rev-parse) returns false for a missing/invalid dir, so
+      // fall back to the base repo cwd rather than spawning into a dead path.
+      let cwd = a.cwd;
+      let worktreeGone = false;
+      if (a.worktreePath) {
+        if (await window.cth.gitIsRepo(a.worktreePath)) {
+          cwd = a.worktreePath;
+        } else {
+          worktreeGone = true;
+          console.warn(`[restore] worktree gone for ${a.id} (${a.worktreePath}); falling back to base repo ${a.cwd}`);
+        }
+      }
+      const res = await window.cth.spawnPty({
+        id: ptyId,
+        cwd,
+        command: exe,
+        provider,
+        args,
+        cols: 100,
+        rows: 30,
+        // Worktree (if any) already exists on disk — cd into it, don't create a
+        // new one (re-isolating would conflict on the existing path/branch and
+        // lose its uncommitted work).
+        isolate: false,
+        // Continue the worker's prior CLI session if one was recorded — the
+        // main process picks the provider's resume flag (Claude --resume,
+        // agy --conversation) and for Claude reattaches the transcript. The
+        // agent id is preserved across restart, so its registry entry,
+        // memory.md and inbox reattach by id. No-op without a recorded session.
+        resume: true,
+        hive: { id: a.id, name: a.name, provider, cwd, role: roleForHiveSpawn(a) }
+      });
+      if (res.ok) {
+        tal.restored++;
+        return {
+            ...a,
+            provider,
+            ptyId,
+            archived: false,
+            status: 'idle',
+            // Surface the worktree fallback on the floor card; otherwise normal.
+            action: worktreeGone ? 'worktree gone — using base repo' : 'starting up',
+            // The worktree is no longer on disk — drop it so this agent is treated
+            // as a plain base-cwd agent going forward (a future restore won't keep
+            // re-probing a dead path).
+            worktreePath: worktreeGone ? undefined : a.worktreePath,
+            // Crush spawns bare (no positional protocol) and hands the seed back
+            // here; useHive types it after boot. Re-seeding a resumed worker is
+            // idempotent (it just re-reads its inbox per protocol). (ondev-b)
+            seedPrompt: res.seedPrompt,
+            carrying: undefined,
+            currentStation: 'desk',
+            recentTextTs: Date.now()
+        };
+      } else if ((res.error ?? '').includes('already exists')) {
+        // A live PTY with this id is already running (e.g. respawned at boot or
+        // by another path) — the agent isn't actually missing, so retire it from
+        // the restorable list rather than reporting a phantom failure.
+        tal.alreadyLive++;
+        useStore.getState().removeRestorableAgent(a.id);
+      } else {
+        // Leave it restorable so the user can retry — but record WHY so the
+        // outcome is shown on the floor, not buried in the devtools console.
+        tal.failures.push(`${a.name}: ${res.error ?? 'spawn failed'}`);
+        console.error('[restore] spawn failed for', a.id, res.error);
+      }
+    } catch (e) {
+      tal.failures.push(`${a.name}: ${e instanceof Error ? e.message : String(e)}`);
+      console.error('[restore] error for', a.id, e);
+    }
+    return null;
+  };
+
   /** Respawn every worker from the previous session with its ORIGINAL agent id,
    *  cwd, model and command — the hive workspace (memory.md, inbox, registry
-   *  entry) reattaches by itself, no memory transplant needed. */
-  const restoreTeam = async (): Promise<void> => {
+   *  entry) reattaches by itself, no memory transplant needed.
+   *  @param onlyIds optional — restore ONLY these restorable agents. The auto
+   *  boot flow uses it to keep planets lazy; manual clicks omit it (all). */
+  const restoreTeam = async (onlyIds?: ReadonlySet<string>): Promise<void> => {
     if (restoring) return;
     restoring = true;
     note = null;
     emit();
     const prevSel = useStore.getState().selectedId;
     const restorableAgents = useStore.getState().restorableAgents;
+    const targets = onlyIds ? restorableAgents.filter((a) => onlyIds.has(a.id)) : restorableAgents;
     // Tally every agent's outcome so the run ALWAYS leaves a visible trace — the
     // original bug was that every failure path was console-only, so a click that
     // couldn't spawn anything looked like a dead button.
-    let restored = 0;
-    let alreadyLive = 0;
-    const failures: string[] = [];
+    tal.restored = 0;
+    tal.alreadyLive = 0;
+    tal.failures.length = 0;
     try {
       // Restore every agent CONCURRENTLY. Each spawn is keyed by its own ptyId and
       // touches no cross-agent state in the renderer, and in the main process the
@@ -94,100 +215,11 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
       // the roster order — and that order is persisted, so a slow provider or a
       // slow git probe silently overwrote the sequence the user had dragged the
       // cards into.
-      const restoredInOrder = await Promise.all([...restorableAgents].map(async (a): Promise<Agent | null> => {
+      const restoredInOrder = await Promise.all([...targets].map(async (a): Promise<Agent | null> => {
         // Per-agent guard: one agent's failure (or a rejected IPC call) must NEVER
         // abort the others — an unhandled rejection here used to make the
         // entire restore a silent no-op after the first bad agent.
-        try {
-          const provider = inferAgentProvider(a.command, a.provider);
-          const command = (a.command ?? '').trim() || (config ? buildSpawnCommand(config, a.model, provider) : '');
-          if (!command || !a.cwd) {
-            // No spawn recipe (an old entry persisted before `command`, with no
-            // config to rebuild one). Keep it restorable and SAY why rather than
-            // silently dropping it — silent removal read as "nothing happened".
-            failures.push(`${a.name}: no saved command`);
-            return null;
-          }
-          const [exe, ...args] = tokenizeCommand(command);
-          const ptyId = a.ptyId ?? `pty-${a.id}`;
-          // An isolated agent's worktree SURVIVES an app restart on disk (it's only
-          // torn down on per-tab close / mid-session exit, not on quit). So re-enter
-          // that exact worktree as the cwd rather than re-isolating — `git worktree
-          // add` would conflict with the existing path/branch, and re-isolating would
-          // also lose the worktree's uncommitted work. cwd = the worktree means
-          // resume + seedSessionTranscript land in the CORRECT checkout.
-          // But the user may have manually pruned/deleted the worktree between runs —
-          // gitIsRepo (git rev-parse) returns false for a missing/invalid dir, so
-          // fall back to the base repo cwd rather than spawning into a dead path.
-          let cwd = a.cwd;
-          let worktreeGone = false;
-          if (a.worktreePath) {
-            if (await window.cth.gitIsRepo(a.worktreePath)) {
-              cwd = a.worktreePath;
-            } else {
-              worktreeGone = true;
-              console.warn(`[restore] worktree gone for ${a.id} (${a.worktreePath}); falling back to base repo ${a.cwd}`);
-            }
-          }
-          const res = await window.cth.spawnPty({
-            id: ptyId,
-            cwd,
-            command: exe,
-            provider,
-            args,
-            cols: 100,
-            rows: 30,
-            // Worktree (if any) already exists on disk — cd into it, don't create a
-            // new one (re-isolating would conflict on the existing path/branch and
-            // lose its uncommitted work).
-            isolate: false,
-            // Continue the worker's prior CLI session if one was recorded — the
-            // main process picks the provider's resume flag (Claude --resume,
-            // agy --conversation) and for Claude reattaches the transcript. The
-            // agent id is preserved across restart, so its registry entry,
-            // memory.md and inbox reattach by id. No-op without a recorded session.
-            resume: true,
-            hive: { id: a.id, name: a.name, provider, cwd, role: roleForHiveSpawn(a) }
-          });
-          if (res.ok) {
-            restored++;
-            return {
-                ...a,
-                provider,
-                ptyId,
-                archived: false,
-                status: 'idle',
-                // Surface the worktree fallback on the floor card; otherwise normal.
-                action: worktreeGone ? 'worktree gone — using base repo' : 'starting up',
-                // The worktree is no longer on disk — drop it so this agent is treated
-                // as a plain base-cwd agent going forward (a future restore won't keep
-                // re-probing a dead path).
-                worktreePath: worktreeGone ? undefined : a.worktreePath,
-                // Crush spawns bare (no positional protocol) and hands the seed back
-                // here; useHive types it after boot. Re-seeding a resumed worker is
-                // idempotent (it just re-reads its inbox per protocol). (ondev-b)
-                seedPrompt: res.seedPrompt,
-                carrying: undefined,
-                currentStation: 'desk',
-                recentTextTs: Date.now()
-            };
-          } else if ((res.error ?? '').includes('already exists')) {
-            // A live PTY with this id is already running (e.g. respawned at boot or
-            // by another path) — the agent isn't actually missing, so retire it from
-            // the restorable list rather than reporting a phantom failure.
-            alreadyLive++;
-            useStore.getState().removeRestorableAgent(a.id);
-          } else {
-            // Leave it restorable so the user can retry — but record WHY so the
-            // outcome is shown on the floor, not buried in the devtools console.
-            failures.push(`${a.name}: ${res.error ?? 'spawn failed'}`);
-            console.error('[restore] spawn failed for', a.id, res.error);
-          }
-        } catch (e) {
-          failures.push(`${a.name}: ${e instanceof Error ? e.message : String(e)}`);
-          console.error('[restore] error for', a.id, e);
-        }
-        return null;
+        return spawnOne(a);
       }));
       // Add in the ORIGINAL roster order, not completion order.
       for (const restoredAgent of restoredInOrder) {
@@ -200,9 +232,9 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
       restoring = false;
       // ALWAYS surface a result so the button can never look inert.
       const parts: string[] = [];
-      if (restored) parts.push(`restored ${restored}`);
-      if (alreadyLive) parts.push(`${alreadyLive} already live`);
-      if (failures.length) parts.push(`${failures.length} failed — ${failures.join('; ')}`);
+      if (tal.restored) parts.push(`restored ${tal.restored}`);
+      if (tal.alreadyLive) parts.push(`${tal.alreadyLive} already live`);
+      if (tal.failures.length) parts.push(`${tal.failures.length} failed — ${tal.failures.join('; ')}`);
       note = parts.length ? parts.join(' · ') : 'nothing to restore';
       emit();
     }
@@ -224,17 +256,24 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
 
     const check = (): void => {
       if (autoStarted || restoring || timer) return;
-      if (!useStore.getState().restorableAgents.length) return;
+      const restorables = useStore.getState().restorableAgents;
+      if (!restorables.length) return;
+      // Lazy planets: the nine planets are pre-seeded spawn-recipes, but they
+      // must NOT come back on their own at boot — they wake only when AIRA
+      // routes a first assignment to them. Restore only the genuinely-kept-open
+      // team (non-planet agents that had a terminal running last time).
+      const manual = restorables.filter((a) => !PLANET_IDS.has(a.id));
+      if (!manual.length) { autoStarted = true; return; } // all planets → nothing auto-restores
+      const onlyIds = new Set(manual.map((a) => a.id));
       timer = setTimeout(() => {
         timer = null;
         if (autoStarted || restoring) return;
-        if (!useStore.getState().restorableAgents.length) return;
         // Latch BEFORE the await so the other mount point's timer, which may
         // fire in this same tick, sees it.
         autoStarted = true;
         autoRestoring = true;
         emit();
-        void restoreTeam().finally(() => { autoRestoring = false; emit(); });
+        void restoreTeam(onlyIds).finally(() => { autoRestoring = false; emit(); });
       }, AUTO_RESTORE_DELAY_MS);
     };
 
@@ -245,6 +284,36 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
     // timer, so it is read fresh at call time and does not belong in the deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config?.onboardingComplete]);
+
+  // WAKE PLANETS ON FIRST ASSIGNMENT — the lazy-spawn trigger. When AIRA routes
+  // a message to a planet that is currently resting (parked: registry row +
+  // mailbox exist, but no PTY), the main-process router emits `hive:message`
+  // with the resolved targets. This effect watches that event and spawns the
+  // targeted planet back to life — a real engine boot, never a faked state.
+  // Wired once on first mount (module latch); unsubscribed on last unmount so
+  // the floor strip ↔ fullscreen rail hand-off never leaves a zombie listener.
+  useEffect(() => {
+    if (wakeWired) return;
+    wakeWired = true;
+    let off: (() => void) | undefined;
+    if (window.cth.onHiveMessage) {
+      off = window.cth.onHiveMessage((e) => {
+        if (restoring || !e.targets || !e.targets.length) return;
+        const targeted = new Set(e.targets);
+        for (const a of useStore.getState().restorableAgents) {
+          if (!PLANET_IDS.has(a.id)) continue;
+          if (!targeted.has(a.id)) continue;
+          if (waking.has(a.id)) continue; // one wake in flight per planet
+          waking.add(a.id);
+          void spawnOne(a).then((agent) => {
+            if (agent) useStore.getState().addAgent(agent);
+          }).finally(() => waking.delete(a.id));
+        }
+      });
+    }
+    return () => { wakeWired = false; off?.(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config]);
 
   return { restoring: isRestoring, autoRestoring: isAutoRestoring, restoreNote, restoreTeam };
 }

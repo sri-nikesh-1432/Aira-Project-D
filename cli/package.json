@@ -1,0 +1,26 @@
+{
+  "name": "aira-cli",
+  "version": "0.4.6",
+  "description": "Terminal interface for AIRA. Talks to the existing desktop multi-agent app through its own on-disk hive (registry, fleet, tasks, messages) — it does not replace or modify the Electron application.",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "aira": "./bin/aira.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node --check bin/aira.js && node --check src/cli.js && node --check src/sys.js && node --check src/dispatch.js && node --check src/commands.js",
+    "test": "node --test test/*.test.cjs"
+  },
+  "keywords": [
+    "aira",
+    "cli",
+    "agents",
+    "harness"
+  ]
+}

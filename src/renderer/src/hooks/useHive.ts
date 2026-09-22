@@ -23,6 +23,7 @@ import { resolveGodName } from '../../../shared/godIdentity';
 import { acquireTerminal, resetTerminal, isTerminalAutomationSafe } from '@/components/terminalPool';
 import { canDeliverToAgent, deliverWithAcknowledgement, checkPrecondition } from './queueDelivery';
 import { OFFICE_CAST, DEFAULT_CHARACTER } from '@/scene/office/cast';
+import { AIRA } from '@shared/planets';
 
 const GOD_ID = 'god';
 /** Accent palette for MAIN-spawned (voice-hired) agents — picked deterministically
@@ -70,10 +71,10 @@ function withStandingGoal(agent: Agent, text: string): string {
   return `<goal>\n${goal}\n</goal>\n\n${text}`;
 }
 
-// The first thing Michael (god) is told on a fresh spawn — orient him and put
-// him to work running the floor. Kept terse and action-oriented.
+// The first thing AIRA (god) is told on a fresh spawn — orient her and put
+// her to work running the floor. Kept terse and action-oriented.
 const INITIAL_GOD_PROMPT = [
-  "You're online as Michael, the orchestrator of the hive. Get oriented, then start running the floor:",
+  "You're online as AIRA, the central intelligence of the hive. Get oriented, then start running the floor:",
   '1. Read your memory.md and drain every message in your inbox.',
   '2. Review board.md + tasks.json and the current roster of agents (active vs archived).',
   '3. Check fleet health: read fleet.json in the hive root for every agent\'s live tokens, cost, status, breaker level, and inbox backlog (`claude agents` will NOT show your hive\'s agents). Flag anyone stalled, over-budget, or breaker-armed.',
@@ -163,7 +164,7 @@ function enrichTaskPrompt(text: string): string {
     `ENRICH TASK: ${text}`,
     '',
     '(Identify the relevant project, cd in, gather READ-ONLY context, then send the improved,',
-    'self-contained prompt to Michael via an outbox message with "to":"god". Do not do the task yourself.)'
+    'self-contained prompt to AIRA via an outbox message with "to":"god". Do not do the task yourself.)'
   ].join('\n');
 }
 
@@ -414,7 +415,7 @@ export function useHive(config: HarnessConfig | null): void {
         // fresh session. Without this the most important context on the floor —
         // the orchestrator's — was lost on every restart.
         resume: true,
-        hive: { id: GOD_ID, name: godName, provider: godProvider, cwd: config.harnessHome!, isGod: true, role: 'orchestrator (god)' }
+        hive: { id: GOD_ID, name: godName, provider: godProvider, cwd: config.harnessHome!, isGod: true, role: AIRA.role }
       });
       if (cancelled) { godSpawning.current = false; return; }
       if (!res.ok) { godSpawning.current = false; useStore.getState().setGodStatus('failed'); return; }
@@ -423,7 +424,7 @@ export function useHive(config: HarnessConfig | null): void {
         name: godName,
         character: 'michael',
         accent: 'lemon',
-        description: 'god — runs the floor, triages requests, escalates only critical calls to you',
+        description: 'AIRA — runs the floor, routes work to the planets, escalates only critical calls to you',
         project: 'hive',
         tmuxTarget: '',
         cwd: config.harnessHome!,
@@ -441,11 +442,11 @@ export function useHive(config: HarnessConfig | null): void {
       useStore.getState().addAgent(god);
       useStore.getState().setGodStatus('ready');
 
-      // Kick Michael off once his TUI is up. Always re-enable remote control so
+      // Kick AIRA off once her TUI is up. Always re-enable remote control so
       // the human can approve permission prompts from their phone (best-effort — a
-      // failed/unknown slash command just prints to his terminal and is harmless).
-      // Then, ONLY on a genuinely fresh spawn, hand him the orientation prompt —
-      // a RESUMED Michael already has his full context and must not be re-oriented
+      // failed/unknown slash command just prints to her terminal and is harmless).
+      // Then, ONLY on a genuinely fresh spawn, hand her the orientation prompt —
+      // a RESUMED AIRA already has her full context and must not be re-oriented
       // mid-thread (that would reset the floor's situational awareness). Both go
       // through the per-pty submit chain, so they're strictly sequential and can't
       // jam together; the boot-grace window keeps the inbox-wake/drain loops off

@@ -149,7 +149,7 @@
     "fullscreenDesc": "This terminal is open in focus mode. Press Esc or exit focus mode to bring it back here.",
     "noPty": "No PTY",
     "noPtyDesc": "This agent has no live terminal. Spawn an agent through \"add agent\" to use the terminal tab.",
-    "killConfirm": "Close {{name}}? The PTY process will terminate and the agent is archived (kept in history, off the floor).",
+    "killConfirm": "Close {{name}}? The PTY process will terminate and the planet is archived (kept in history, off the floor).",
     "ideTip": "Open the IDE: browse and edit files in {{project}}, and see uncommitted changes as a diff.",
     "terminalTip": "Open your system terminal app in {{cwd}} — a normal shell in this agent's folder, separate from the agent's own terminal.",
     "openIde": "Open the IDE",
@@ -165,11 +165,11 @@
     "reportProblem": "report a problem",
     "fullChangelog": "full changelog →",
     "announcement": "Announcement",
-    "proLaunch": "v0.5.0 launches with Munder Difflin Pro.",
+    "proLaunch": "v0.5.0 launches with AIRA Pro.",
     "proCommunityFree": "Community stays free, stays open, and keeps getting updates.",
     "proParagraph": "Pro ships with new features and integrations, with more posted throughout the year, and it stays ahead of Community, for power users who want the full potential of coding agents and agent harnesses. The Pro roadmap also includes a mobile app.",
     "foundersWallTitle": "On the Founders' Wall?",
-    "foundersWallBody": "A month of Munder Difflin Pro free, then 50% off the annual plan. For the first 100 people on the wall.",
+    "foundersWallBody": "A month of AIRA Pro free, then 50% off the annual plan. For the first 100 people on the wall.",
     "seeTheWall": "see the wall",
     "joinDiscord": "join Discord"
   },
@@ -216,12 +216,12 @@
     "changeHome": {
       "newHome": "New home folder",
       "moveTitle": "Move existing data (recommended)",
-      "moveDesc": "Copy this harness's hive (every agent, memory, task) and the semantic-memory palace into the new folder. The old folder is left untouched as a backup you can delete later.",
+      "moveDesc": "Copy this workspace's AIRA Network (every planet, memory, task) and the semantic-memory palace into the new folder. The old folder is left untouched as a backup you can delete later.",
       "freshTitle": "Start fresh",
-      "freshDesc": "Point the harness at the new (empty) folder. Your existing data stays in the old folder, simply unused."
+      "freshDesc": "Point AIRA at the new (empty) folder. Your existing data stays in the old folder, simply unused."
     },
     "resetConfirm": {
-      "body": "This permanently erases all of {{godName}}'s memories and the entire hive, and cannot be undone. Any running sessions will be terminated and the app will relaunch into onboarding. Are you sure?"
+      "body": "This permanently erases all of {{godName}}'s memories and the entire AIRA Network, and cannot be undone. Any running sessions will be terminated and the app will relaunch into onboarding. Are you sure?"
     },
     "general": {
       "homeFolder": "Home folder",
@@ -243,7 +243,7 @@
       "language": "Language",
       "languageDesc": "Choose the language for the app interface. English is the default.",
       "dangerZone": "DANGER ZONE",
-      "dangerDesc": "Reset wipes {{godName}}'s memories, the entire hive (every agent, message, task, and the board), the semantic-memory palace, and all settings - then takes you back to onboarding.",
+      "dangerDesc": "Reset wipes {{godName}}'s memories, the entire AIRA Network (every planet, message, task, and the board), the semantic-memory palace, and all settings - then takes you back to onboarding.",
       "resetStartOver": "reset & start over",
       "arabicTerminal": "Arabic / RTL text in terminals",
       "arabicTerminalDesc": "Renders terminals with the browser's text engine so Arabic joins and reads right-to-left (xterm has no bidi of its own). Off is the GPU renderer: faster, but RTL-blind. Applies to open terminals and new ones alike.",
@@ -387,6 +387,7 @@
     "ideTitle": "Open the IDE: browse and edit files in the selected agent's workspace, and see uncommitted changes as a diff.",
     "ide": "IDE",
     "tabs": {
+      "command": "directive",
       "terminal": "terminal",
       "floor": "monitor",
       "tasks": "tasks",
@@ -399,20 +400,25 @@
       "skills": "skills",
       "workers": "workers"
     },
+    "chat": {
+      "title": "DIRECTIVE BOARD",
+      "subtitle": "Talk to {{name}} in plain language — she answers, acts, or delegates to the right planet. Planets wake on demand when work reaches them.",
+      "openTerminal": "open terminal"
+    },
     "terminalFullscreen": "Terminal is open in fullscreen. Press Esc to bring it back.",
     "noTerminal": "{{name}} has no live terminal.",
-    "dispatchViaMichael": "DISPATCH — VIA {{godName}}",
+    "dispatchViaAira": "DISPATCH — VIA {{godName}}",
     "suggestedOwner": "SUGGESTED OWNER",
-    "michaelDecides": "{{godName}} decides",
+    "airaDecides": "{{godName}} decides",
     "dispatchPlaceholder": "Describe the task… ({{godName}} decomposes, writes the card, and assigns)",
     "dispatch": "dispatch",
-    "sentToMichael": "sent to {{godName}}",
+    "sentToAira": "sent to {{godName}}",
     "sentToWithSuggestion": "sent to {{godName}} (suggesting {{name}})",
     "dispatchFailed": "failed: {{error}}",
     "dispatchSuggestion": "(The human suggests {{name}} ({{id}}) for this — your call as orchestrator.)",
     "taskFromHuman": "Task from the human",
-    "agents": "AGENTS",
-    "godTag": " (god)",
+    "agents": "PLANETS",
+    "godTag": " (AIRA)",
     "toolCalls": "{{count}} tool calls",
     "rate": "rate",
     "budget": "budget",
@@ -425,9 +431,9 @@
     "modelRestarts": "{{provider}} model (restarts agent)",
     "restartContinue": "restart & continue",
     "restartContinueTitle": "Kill and respawn {{name}}, resuming its current conversation — fixes a corrupted/garbled terminal without losing context",
-    "engine": "engine:",
+    "engine": "office engine:",
     "apply": "apply",
-    "confirmRestartEngine": "This restarts {{name}}; a conversation on a different engine can't be resumed.",
+    "confirmRestartEngine": "This is the office's active engine, so applying it restarts {{name}} and every planet on the floor. A conversation on a different engine can't be resumed.",
     "restartFailed": "Restart failed.",
     "archived": "ARCHIVED ({{count}})",
     "showClosed": "show closed agents",
@@ -443,11 +449,11 @@
     "noIssues": "No issues fetched yet.",
     "assign": "Assign",
     "textSearch": "TEXT SEARCH (board, tasks, memory)",
-    "textSearchPlaceholder": "Find exact text across hive files…",
+    "textSearchPlaceholder": "Find exact text across AIRA Network files…",
     "nothingMatched": "Nothing matched.",
     "searchNoMatch": "Nothing matched yet.",
     "semanticSearch": "SEMANTIC SEARCH (MemPalace)",
-    "semanticPlaceholder": "What does the hive know about…",
+    "semanticPlaceholder": "What does the AIRA Network know about…",
     "memoryFile": "MEMORY FILE",
     "noMemory": "No memory recorded yet.",
     "activity": "ACTIVITY",
@@ -578,20 +584,20 @@
   },
   "onboarding": {
     "titles": {
-      "persona": "WELCOME TO MUNDER DIFFLIN",
+      "persona": "MEET AIRA",
       "welcome": "MEET YOUR OFFICE",
-      "home": "STEP 1 OF 4 · HARNESS HOME",
-      "homePlain": "STEP 1 OF 4 · A HOME FOR THE APP",
-      "orchestrator": "STEP 2 OF 4 · YOUR CLONE'S ENGINE",
-      "orchestratorPlain": "STEP 2 OF 4 · YOUR CLONE",
+      "home": "STEP 1 OF 4 · YOUR WORKSPACE",
+      "homePlain": "STEP 1 OF 4 · YOUR WORKSPACE",
+      "orchestrator": "STEP 2 OF 4 · AIRA'S ENGINE",
+      "orchestratorPlain": "STEP 2 OF 4 · AIRA",
       "repos": "STEP 3 OF 4 · YOUR REPOS",
       "reposPlain": "STEP 3 OF 4 · YOUR PROJECTS",
       "permissions": "STEP 4 OF 4 · PERMISSIONS & RELIABILITY",
       "done": "ALL SET"
     },
     "persona": {
-      "headline": "A CLONE OF YOU, WORKING 24/7",
-      "body": "Munder Difflin turns the CLI agent you already use into a clone of you — one that runs an office of long-running agents and keeps working while you're away. It manages everything around them: context, memory, tasks, triggers, environment, files, and integrations.",
+      "headline": "AIRA — AN OFFICE THAT WORKS 24/7",
+      "body": "AIRA turns the CLI agent you already use into your central intelligence — one that runs an office of long-running planets and keeps working while you're away. It manages everything around them: context, memory, tasks, triggers, environment, files, and integrations.",
       "bodyLocal": " Everything runs on this machine.",
       "ask": "FIRST — WHO ARE YOU? (we'll tailor the setup)",
       "technicalTitle": "I'M TECHNICAL",
@@ -600,9 +606,9 @@
       "nonTechnicalDesc": "I'm in marketing, sales, ops, or just starting out. Explain things in plain language."
     },
     "welcome": {
-      "headline": "YOUR CLONE AND THE FLOOR IT RUNS",
-      "descPlain": "Your clone runs a small office of AI workers, and you watch it all from one screen. Here's what's inside:",
-      "desc": "Your clone coordinates a hive of AI coding agents — persistent, watchable, all local. Here's what's inside:",
+      "headline": "AIRA AND THE FLOOR IT RUNS",
+      "descPlain": "AIRA runs a small office of AI planets, and you watch it all from one screen. Here's what's inside:",
+      "desc": "AIRA coordinates a network of AI planets — persistent, watchable, all local. Here's what's inside:",
       "features": {
         "engines": {
           "label": "ELEVEN ENGINES, ONE OFFICE",
@@ -610,9 +616,9 @@
           "descPlain": "Eleven AI assistants — Claude, Codex, Cursor, Gemini, Grok and more — working side by side in one shared office."
         },
         "clone": {
-          "label": "{{godName}} IS YOUR CLONE",
-          "desc": "Your clone runs the floor — triages requests, routes tasks, and escalates only what needs you.",
-          "descPlain": "Your clone, {{godName}}, takes your requests, hands work to the right agent, and only interrupts you when it matters."
+          "label": "{{godName}} — YOUR CENTRAL INTELLIGENCE",
+          "desc": "AIRA runs the floor — triages requests, routes work to the right planet, and escalates only what needs you.",
+          "descPlain": "AIRA, {{godName}}, takes your requests, hands work to the right planet, and only interrupts you when it matters."
         },
         "memory": {
           "label": "LONG-TERM MEMORY",
@@ -645,24 +651,24 @@
       "cursor": "Cursor Agent CLI — uses your Cursor credits (Luna, Composer, …)"
     },
     "home": {
-      "descPlain": "Create a new, empty folder for the app to call home. Everything the app remembers — its own settings and your agents' memory — is stored here. Something like ~/HarnessAgents works well. We'll create it for you if it doesn't exist.",
-      "desc": "Pick a folder where the harness will keep its own files — agent metadata, logs, and any new repos you create from here. Something like ~/HarnessAgents is a fine default. We'll create it if it doesn't exist.",
-      "placeholder": "/path/to/HarnessAgents",
+      "descPlain": "Create a new, empty folder for the app to call home — Datta's workspace. Everything the app remembers — its own settings and your agents' memory — is stored here. Something like ~/AIRAWorkspace works well. We'll create it for you if it doesn't exist.",
+      "desc": "Pick a folder for Datta's workspace, where AIRA keeps her files — agent metadata, logs, and any new repos you create from here. Something like ~/AIRAWorkspace is a fine default. We'll create it if it doesn't exist.",
+      "placeholder": "/path/to/AIRAWorkspace",
       "createPick": "create / pick",
       "pick": "pick",
       "notePlain": "You won't need to open this folder day-to-day — it's just where the app keeps its notes so nothing is lost when you restart.",
-      "note": "Think of this as the \"town hall.\" The harness pins agent state there so sessions can be picked back up after a restart."
+      "note": "Think of this as the \"town hall.\" AIRA pins agent state there so sessions can be picked back up after a restart."
     },
     "orchestrator": {
-      "descPlain": "{{godName}} is your clone — he reads your requests, breaks them into tasks, and hands them to the right agent. He's the boss of the floor; you're still the boss of him. Choose which AI engine powers him.",
-      "desc": "{{godName}} is your clone — the boss of the floor you just met. He triages your requests, assigns tasks, and manages the team, while escalating anything that genuinely needs you. Pick the engine and model that power him; give him a longer-context, higher-capability model.",
-      "cliAgentPlain": "A <strong>CLI agent</strong> is an AI coding assistant that runs on your computer — popular ones are Claude Code (Anthropic), Codex (OpenAI) and Antigravity (Google Gemini). <strong>Your clone</strong> is the always-on one that runs your whole office. We recommend Claude Code on Opus 4.8 (1M). You can add or switch the others later.",
-      "cliAgent": "Each option is a <strong>CLI engine</strong> (Claude Code, Codex, Antigravity/Gemini, or a local proxy like Qwen). Engines marked INSTALLED are already on this machine; INSTALLS ON FIRST RUN means the app sets it up when {{godName}} first starts. <strong>Your clone</strong> ({{godName}}) is the engine that orchestrates the whole hive. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired per agent later.",
+      "descPlain": "{{godName}} is AIRA — it reads your requests, breaks them into tasks, and hands them to the right planet. It runs the floor; you are still the boss of it. Choose which AI engine powers it.",
+      "desc": "{{godName}} is AIRA — the central intelligence of the floor you just met. It triages your requests, assigns work to the planets, and manages the team, while escalating anything that genuinely needs you. Pick the engine and model that power it; give it a longer-context, higher-capability model.",
+      "cliAgentPlain": "A <strong>CLI agent</strong> is an AI coding assistant that runs on your computer — popular ones are Claude Code (Anthropic), Codex (OpenAI) and Antigravity (Google Gemini). <strong>AIRA</strong> is the always-on one that runs your whole office. We recommend Claude Code on Opus 4.8 (1M). You can add or switch the others later.",
+      "cliAgent": "Each option is a <strong>CLI engine</strong> (Claude Code, Codex, Antigravity/Gemini, or a local proxy like Qwen). Engines marked INSTALLED are already on this machine; INSTALLS ON FIRST RUN means the app sets it up when {{godName}} first starts. <strong>AIRA</strong> ({{godName}}) is the engine that orchestrates the whole AIRA Network. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired per agent later.",
       "recommended": "RECOMMENDED",
       "workersOnly": "WORKERS ONLY",
-      "workersOnlyHint": "Can't drain hive mail yet, so it can't run your clone — still available when hiring workers.",
+      "workersOnlyHint": "Can't drain AIRA Network mail yet, so it can't run AIRA — still available when hiring workers.",
       "model": "Model",
-      "modelNote": "This only sets {{godName}}'s engine. You can run other providers per agent later."
+      "modelNote": "This is the office's active engine: {{godName}} and every planet run on it. Change it here and the whole office switches."
     },
     "repos": {
       "descPlain": "Add your projects. A project is simply a folder — it can hold code, documents, notes, or any files you want your agents to work with. You can create a brand-new folder or pick an existing one, and add more anytime.",
@@ -690,9 +696,9 @@
       "notifications": "DESKTOP NOTIFICATIONS",
       "notificationsDesc": "Get pinged when an agent needs you or a terminal needs reviving — even while you're away. Your system may ask permission the first time one fires.",
       "openAtLogin": "OPEN AT LOGIN",
-      "openAtLoginDesc": "Relaunch the harness after a reboot so scheduled missions resume on their own. No prompt — applies immediately.",
+      "openAtLoginDesc": "Relaunch AIRA after a reboot so scheduled missions resume on their own. No prompt — applies immediately.",
       "shareStats": "SHARE ANONYMOUS USAGE STATS",
-      "shareStatsDesc": "A handful of anonymous events (app opened, agent spawned, feature used) that help improve Munder Difflin — never prompts, code, file paths, or agent output. Full list in TELEMETRY.md; change anytime in Settings.",
+      "shareStatsDesc": "A handful of anonymous events (app opened, agent spawned, feature used) that help improve AIRA — never prompts, code, file paths, or agent output. Full list in TELEMETRY.md; change anytime in Settings.",
       "stayAwake": "STAY AWAKE ON POWER (MANUAL)",
       "stayAwakeDescMac": "macOS only lets you set this one yourself. In Battery → Options, turn on \"Prevent automatic sleeping when the display is off\" (on power adapter) so timers keep firing with the display asleep. Without a sleep-preventing setting the Mac still truly sleeps — work survives and catches up on wake.",
       "stayAwakeDescWindows": "Windows only lets you set this one yourself. In Settings → System → Power & battery → Screen, blank & sleep, set \"On battery power, put my device to sleep\" and \"When plugged in\" to Never (or increase them) so timers keep firing. Without a sleep-preventing setting Windows still truly sleeps — work survives and catches up on wake.",
@@ -702,8 +708,8 @@
       "setItUp": "set it up",
       "next": "next"
     },
-    "errPickHome": "Pick a harness home folder first.",
-    "errCreateHome": "could not create harness home",
+    "errPickHome": "Pick an AIRA workspace folder first.",
+    "errCreateHome": "could not create AIRA workspace",
     "errEngineNotInstalled": "{{label}} is not installed. Install it and press \"check again\", or pick another engine."
   },
   "office": {
@@ -799,10 +805,10 @@
     "statusNotSetUp": "NOT SET UP",
     "recommended": "recommended",
     "docs": "docs →",
-    "askDesc": "{{godName}} can install the {{count}} missing recommended tool for you. This fills in his dispatch box — nothing runs until you press dispatch.",
-    "askDescPlural": "{{godName}} can install the {{count}} missing recommended tools for you. This fills in his dispatch box — nothing runs until you press dispatch.",
+    "askDesc": "{{godName}} can install the {{count}} missing recommended tool for you. This fills in her dispatch box — nothing runs until you press dispatch.",
+    "askDescPlural": "{{godName}} can install the {{count}} missing recommended tools for you. This fills in her dispatch box — nothing runs until you press dispatch.",
     "allReady": "Everything recommended is installed. Individual engines above are optional — set up only the ones you use.",
-    "askMichael": "ask {{godName}} to set up everything",
+    "askAira": "ask {{godName}} to set up everything",
     "sections": {
       "prerequisites": {
         "title": "Prerequisites",
@@ -831,7 +837,7 @@
     "localEndpoint": "LOCAL ENDPOINT · DEFAULT MODEL (PER ENGINE)",
     "defaultModelPlaceholder": "default model (provider/model)",
     "runningOpenModels": "Running open models? Step-by-step guides:",
-    "runOnOpenModels": "run Munder Difflin on open models",
+    "runOnOpenModels": "run AIRA on open models",
     "setUpMacMini": "set it up on a Mac Mini",
     "autoModeCaveat": "⚠ In auto mode these engines run with full filesystem + shell access (no sandbox) — like Claude's bypass mode. Turn auto mode off (General) to make them ask first. Live end-to-end verification with real model calls is pending your keys / a local LLM."
   },
@@ -881,7 +887,7 @@
     "downloadingHeadline": "Downloading v{{version}}",
     "downloadingDetail": "{{percent}}% done. You can keep working; the restart is yours to trigger.",
     "downloadedHeadline": "v{{version}} is ready to install",
-    "downloadedDetail": "Restart Munder Difflin to finish updating from v{{v}}.",
+    "downloadedDetail": "Restart AIRA to finish updating from v{{v}}.",
     "restartBtn": "Restart to update",
     "manualDetail": "This install can't update itself — download it from the release page.",
     "manualDetailReason": "This install can't update itself ({{reason}}) — download it from the release page.",
@@ -908,7 +914,7 @@
     "webhooks": "WEBHOOKS",
     "webhooksBlurb": "Let an outside system post work in.",
     "organisation": "ORGANISATION",
-    "organisationBlurb": "Let a teammate's Munder Difflin message yours."
+    "organisationBlurb": "Let a teammate's AIRA message yours."
   },
   "orgSection": {
     "acceptMessages": "Accept messages from your organisation",
@@ -1021,7 +1027,7 @@
     "emptyMessage": "(empty message)",
     "showLess": "show less",
     "showAll": "show all {{count}} characters",
-    "tailRejected": "You turned this down. Nothing was sent to the hive.",
+    "tailRejected": "You turned this down. Nothing was sent to the AIRA Network.",
     "tailNoReply": "No reply yet. {{godName}} has this one.",
     "waitingForYou": "WAITING FOR YOU",
     "unnamedSource": "unnamed source",
@@ -1031,7 +1037,7 @@
     "theySent": "THEY SENT",
     "weReplied": "WE REPLIED",
     "weSent": "WE SENT",
-    "pendingDirectiveDesc": "Approve and this goes to {{godName}}, who will put the hive to work on it. Reject and it is dropped — nothing runs.",
+    "pendingDirectiveDesc": "Approve and this goes to {{godName}}, who will put the AIRA Network to work on it. Reject and it is dropped — nothing runs.",
     "pendingDesc": "Approve and {{godName}} reads this. Reject and it is dropped — nothing runs.",
     "approveTitle": "Send this message through to {{godName}}",
     "oneSec": "one sec…",
@@ -1103,7 +1109,7 @@
     "contextTitle": "Context: {{used}} / {{limit}} tokens ({{pct}}%)",
     "modelTitle": "Model: {{model}}",
     "cliDefault": "CLI default",
-    "closeAgent": "Close {{name}} — ends the process and archives the agent",
+    "closeAgent": "Close {{name}} — ends the process and archives the planet",
     "ideTip": "Open the IDE: browse and edit files in {{name}}'s workspace, and see their uncommitted changes as a diff.",
     "openIdeAria": "Open the IDE",
     "openTerminalTip": "Open your system terminal app in {{cwd}} — a normal shell in this agent's folder, separate from the agent's own terminal.",

@@ -69,7 +69,9 @@ export function hasOssQuickPicks(provider: AgentProvider): boolean {
   return provider === 'opencode' || provider === 'crush' || provider === 'pi';
 }
 
-/** Canonical blog URLs the local-setup UI hyperlinks to (ondev-c part-3). */
+/** Canonical blog URLs the local-setup UI hyperlinks to (ondev-c part-3).
+ *  These live on the upstream project's site; the fork has no blog of its own yet,
+ *  so they stay pointed at the source articles until Aira-Project-D hosts docs. */
 export const OSS_BLOG_LINKS = {
   openModels: 'https://munderdiffl.in/blog/run-munder-difflin-on-open-models/',
   macMini: 'https://munderdiffl.in/blog/run-munder-difflin-on-a-mac-mini/'

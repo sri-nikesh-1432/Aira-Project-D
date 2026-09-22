@@ -1,0 +1,15 @@
+[
+  { "id": "claude", "label": "Claude Code", "recommendedOrchestratorModel": "claude-opus-4-8[1m]" },
+  { "id": "codex", "label": "Codex · GPT", "recommendedOrchestratorModel": "gpt-5-codex" },
+  { "id": "grok", "label": "Grok · xAI" },
+  { "id": "kimi", "label": "Kimi Code" },
+  { "id": "gemini", "label": "Gemini CLI", "recommendedOrchestratorModel": "pro" },
+  { "id": "antigravity", "label": "Antigravity · Gemini", "recommendedOrchestratorModel": "Gemini 3.1 Pro (High)" },
+  { "id": "qwen", "label": "Qwen (local available)", "recommendedOrchestratorModel": "qwen3-coder-plus" },
+  { "id": "opencode", "label": "OpenCode" },
+  { "id": "crush", "label": "Crush · Charm", "recommendedOrchestratorModel": "openai/gpt-4o" },
+  { "id": "pi", "label": "Pi", "recommendedOrchestratorModel": "anthropic/claude-sonnet-4-5" },
+  { "id": "copilot", "label": "Copilot", "recommendedOrchestratorModel": "claude-sonnet-4.5" },
+  { "id": "cursor", "label": "Cursor", "recommendedOrchestratorModel": "gpt-5.6-luna-high" },
+  { "id": "custom", "label": "Custom" }
+]

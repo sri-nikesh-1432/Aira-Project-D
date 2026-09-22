@@ -13,6 +13,12 @@ const { removeWorktree } = loadTs('src/main/git.ts');
 
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
 
+// node_modules is a SYMLINK into the worktree — the entire mechanism under test.
+// Windows denies symlink(2) without privileges, so skip (not fail) there; the
+// linking/unlinking code is platform-independent and exercised on POSIX CI.
+const SYMLINKS_AVAILABLE = process.platform !== 'win32';
+const needsSymlinks = { skip: SYMLINKS_AVAILABLE ? false : 'symlink(2) needs privileges on Windows' };
+
 function makeHarness() {
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'md-worktree-deps-'));
   const repo = path.join(home, 'repo');
@@ -75,7 +81,7 @@ test('does not replace an existing worktree node_modules entry', async () => {
   assert.equal(fs.readFileSync(path.join(worktreeNodeModules, 'own.txt'), 'utf8'), 'own\n');
 });
 
-test('does not follow the dependency symlink when removing a worktree', async () => {
+test('does not follow the dependency symlink when removing a worktree', needsSymlinks, async () => {
   const { repo, wtRoot } = makeHarness();
   const baseNodeModules = path.join(repo, 'node_modules');
   fs.mkdirSync(baseNodeModules);
@@ -92,7 +98,7 @@ test('does not follow the dependency symlink when removing a worktree', async ()
   assert.equal(fs.readFileSync(sentinel, 'utf8'), 'still here\n');
 });
 
-test('leaves a dangling worktree dependency symlink untouched', async () => {
+test('leaves a dangling worktree dependency symlink untouched', needsSymlinks, async () => {
   const { repo, wtRoot } = makeHarness();
   fs.mkdirSync(path.join(repo, 'node_modules'));
   const wtPath = addWorktree(repo, wtRoot, 'agent-e');
@@ -114,10 +120,13 @@ test('reports a failed link without throwing', async () => {
   const result = await linkWorktreeDeps(repo, notADirectory);
 
   assert.equal(result.ok, false);
-  assert.match(result.error, /EEXIST|ENOTDIR/);
+  // Windows surfaces EPERM/EINVAL where POSIX reports EEXIST/ENOTDIR for the
+  // same "target is a file, not a directory" link attempt; the contract under
+  // test is "fails with a diagnostic, does not throw".
+  assert.match(result.error, /EEXIST|ENOTDIR|EPERM|EINVAL|ENOENT/);
 });
 
-test('removes only the linked dependencies before checking worktree status', async () => {
+test('removes only the linked dependencies before checking worktree status', needsSymlinks, async () => {
   const { repo, wtRoot } = makeHarness();
   const baseNodeModules = path.join(repo, 'node_modules');
   fs.mkdirSync(baseNodeModules);
@@ -148,7 +157,7 @@ test('does not remove a real worktree node_modules directory', async () => {
   assert.deepEqual(result, { ok: true, removed: false });
 });
 
-test('does not remove a worktree node_modules link to another directory', async () => {
+test('does not remove a worktree node_modules link to another directory', needsSymlinks, async () => {
   const { repo, wtRoot } = makeHarness();
   fs.mkdirSync(path.join(repo, 'node_modules'));
   const foreignNodeModules = path.join(repo, 'foreign-node-modules');

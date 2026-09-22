@@ -30,6 +30,14 @@ const loadTs = require('./load-ts.cjs');
 const { readFileText, readFileBinary, writeFileText, listDir } = loadTs('src/main/fs.ts');
 const { getDiff } = loadTs('src/main/git.ts');
 
+// The boundary guard walks symlink components with lstat/realpath and opens with
+// O_NOFOLLOW — all of which behave, and are only testable, where symlinks can be
+// CREATED. Windows needs elevated privileges for symlink(2), so skip (not fail)
+// there rather than reporting the platform as broken. The code paths themselves
+// are platform-independent and are exercised on POSIX CI.
+const SYMLINKS_AVAILABLE = process.platform !== 'win32';
+const needsSymlinks = { skip: SYMLINKS_AVAILABLE ? false : 'symlink(2) needs privileges on Windows' };
+
 const SECRET = 'external-secret-contents\n';
 
 /**
@@ -78,25 +86,25 @@ function withWorkspace(fn) {
 
 // ─── reads ──────────────────────────────────────────────────────────────────
 
-test('a final-component symlink cannot be read as text', () => withWorkspace(async ({ root }) => {
+test('a final-component symlink cannot be read as text', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const res = await readFileText(root, 'innocent.txt');
   assert.equal(res.ok, false, 'a symlink out of the workspace must not be readable');
   assert.equal(res.content, undefined);
 }));
 
-test('a final-component symlink cannot be read as bytes', () => withWorkspace(async ({ root }) => {
+test('a final-component symlink cannot be read as bytes', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const res = await readFileBinary(root, 'innocent.bin');
   assert.equal(res.ok, false, 'the binary reader shares the boundary and must refuse too');
 }));
 
-test('an intermediate directory symlink cannot be read through', () => withWorkspace(async ({ root }) => {
+test('an intermediate directory symlink cannot be read through', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const res = await readFileText(root, 'sub/deep.txt');
   assert.equal(res.ok, false, 'the escape can be any component, not just the last one');
 }));
 
 // ─── writes ─────────────────────────────────────────────────────────────────
 
-test('a final-component symlink cannot be written through', () => withWorkspace(async ({ root, outside }) => {
+test('a final-component symlink cannot be written through', needsSymlinks, () => withWorkspace(async ({ root, outside }) => {
   const target = path.join(outside, 'overwrite-me.txt');
   const before = fs.readFileSync(target, 'utf8');
   const res = await writeFileText(root, 'notes.txt', 'clobbered\n');
@@ -104,7 +112,7 @@ test('a final-component symlink cannot be written through', () => withWorkspace(
   assert.equal(fs.readFileSync(target, 'utf8'), before, 'the external file must be untouched');
 }));
 
-test('a dangling symlink cannot be used to create a file outside the workspace', () =>
+test('a dangling symlink cannot be used to create a file outside the workspace', needsSymlinks, () =>
   withWorkspace(async ({ root, outside }) => {
     // The link target does not exist, so `realpath` cannot see where this leads —
     // canonicalization alone would let the write through and CREATE the external
@@ -119,12 +127,12 @@ test('a dangling symlink cannot be used to create a file outside the workspace',
 
 // ─── the other consumers of the same guard ──────────────────────────────────
 
-test('listDir cannot list a directory outside the workspace', () => withWorkspace(async ({ root }) => {
+test('listDir cannot list a directory outside the workspace', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const res = await listDir(root, 'sub');
   assert.equal(res.ok, false, 'the directory listing shares the boundary');
 }));
 
-test('the git diff path check refuses a symlink escape', () => withWorkspace(async ({ root }) => {
+test('the git diff path check refuses a symlink escape', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const res = await getDiff(root, 'innocent.txt');
   assert.equal(res.ok, false, 'git path operations validate against the same boundary');
   assert.equal(res.working, undefined, 'the external file contents must never be returned');
@@ -132,7 +140,7 @@ test('the git diff path check refuses a symlink escape', () => withWorkspace(asy
 
 // ─── and ordinary workspace use still works ─────────────────────────────────
 
-test('ordinary in-workspace reads and writes still succeed', () => withWorkspace(async ({ root }) => {
+test('ordinary in-workspace reads and writes still succeed', needsSymlinks, () => withWorkspace(async ({ root }) => {
   const text = await readFileText(root, 'real.txt');
   assert.equal(text.ok, true, text.ok ? '' : text.error);
   assert.equal(text.content, 'in-workspace\n');
@@ -154,7 +162,7 @@ test('ordinary in-workspace reads and writes still succeed', () => withWorkspace
   assert.ok(listed.entries.some((e) => e.name === 'shot.bin'));
 }));
 
-test('an in-workspace symlink to an in-workspace target is followed, not refused', () =>
+test('an in-workspace symlink to an in-workspace target is followed, not refused', needsSymlinks, () =>
   withWorkspace(async ({ root }) => {
     // The boundary is the workspace, not "no symlinks at all": a link whose
     // target is itself inside the workspace reaches nothing the caller could not
@@ -208,7 +216,7 @@ test('the git diff read refuses a final component swapped for a symlink mid-call
   assert.equal(res.working, '', 'the external file contents must never reach the renderer');
 }));
 
-test('lexical traversal out of the root is still rejected', () => withWorkspace(async ({ root, dir }) => {
+test('lexical traversal out of the root is still rejected', needsSymlinks, () => withWorkspace(async ({ root, dir }) => {
   for (const rel of ['../outside/secret.txt', 'docs/../../outside/secret.txt', path.join(dir, 'outside', 'secret.txt')]) {
     const res = await readFileText(root, rel);
     assert.equal(res.ok, false, `${rel} must not be readable`);

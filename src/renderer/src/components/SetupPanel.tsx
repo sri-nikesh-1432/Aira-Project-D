@@ -139,7 +139,7 @@ export function SetupPanel({ onDone }: { onDone?: () => void } = {}) {
   );
   const readyCount = (tools ?? []).filter((t) => t.found).length;
 
-  const askMichael = () => {
+  const askAira = () => {
     if (missingEssential.length === 0) return;
     requestDispatchSeed(setupPrompt(missingEssential));
     requestCommandCenterTab('floor'); // the dispatch box lives on the monitor tab
@@ -179,11 +179,11 @@ export function SetupPanel({ onDone }: { onDone?: () => void } = {}) {
         <PixelButton
           variant="primary"
           size="md"
-          onClick={askMichael}
+          onClick={askAira}
           disabled={missingEssential.length === 0}
         >
           <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
-            <Icon name="sparkle" /> {t('setupPanel.askMichael')}
+            <Icon name="sparkle" /> {t('setupPanel.askAira')}
           </span>
         </PixelButton>
       </div>

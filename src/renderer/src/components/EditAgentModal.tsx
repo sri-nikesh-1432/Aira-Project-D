@@ -124,7 +124,7 @@ export function EditAgentModal({ agent, onClose }: EditAgentModalProps) {
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Stanley"
+                  placeholder="Mercury"
                   style={inputStyle}
                   autoFocus
                 />

@@ -71,6 +71,11 @@ export default defineConfig({
   renderer: {
     define,
     root: resolve(__dirname, 'src/renderer'),
+    // AIRA is served on 5174 (Munder Difflin used Vite's default 5173).
+    // `strictPort` is deliberate: if the port is taken the dev server should
+    // fail loudly and tell us, rather than silently drifting to another port
+    // while whatever is showing on 5174 is a stale app from another checkout.
+    server: { port: 5174, strictPort: true },
     build: {
       rollupOptions: {
         input: { index: resolve(__dirname, 'src/renderer/index.html') }

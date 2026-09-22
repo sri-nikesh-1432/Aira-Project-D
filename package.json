@@ -1,17 +1,17 @@
 {
-  "name": "munder-difflin",
+  "name": "aira-project-d",
   "version": "0.4.6",
   "private": true,
-  "description": "Clones for you and your team, working 24/7 — a free, local-first multi-agent harness that turns the CLI coding agent you already run into a clone of you, coordinating an office of agents on your machine.",
+  "description": "AIRA — one female AI intelligence, one input box. She analyzes every request, spawns only the planet agents a task needs, coordinates their collaboration, and delivers the result.",
   "main": "out/main/index.js",
-  "author": "Chaitanya Giri",
-  "homepage": "https://munderdiffl.in/",
+  "author": "Sri Nikesh",
+  "homepage": "https://github.com/sri-nikesh-1432/Aira-Project-D",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/chaitanyagiri/munder-difflin.git"
+    "type": "git",    "url": "https://github.com/sri-nikesh-1432/Aira-Project-D.git"
   },
   "scripts": {
     "dev": "electron-vite dev",
+    "start": "electron-vite dev",
     "build": "electron-vite build && npm run copy:main-assets",
     "copy:main-assets": "node tools/copy-main-assets.cjs",
     "preview": "electron-vite preview",
@@ -20,6 +20,9 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "test:focused": "node --test test/*.test.cjs",
+    "cli": "node cli/bin/aira.js",
+    "cli:build": "npm --prefix cli run build",
+    "cli:test": "npm --prefix cli run test",
     "check:links": "node tools/check-release-links.cjs",
     "dist": "npm run build && electron-builder",
     "dist:mac": "npm run build && electron-builder --mac",

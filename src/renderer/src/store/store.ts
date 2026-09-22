@@ -238,6 +238,20 @@ interface State {
   removeArchivedAgent: (id: string) => void;
   /** Drop one agent from the restorable list (it was respawned or dismissed). */
   removeRestorableAgent: (id: string) => void;
+  /** Provision the AIRA default roster: append spawn recipes for planets that
+   *  are not already on the floor, archived, or restorable. Idempotent by id, so
+   *  a re-run (or a race with a hire) can never duplicate a planet. */
+  seedRestorableAgents: (entries: Agent[]) => void;
+  /** Point every restorable planet at the office's active engine. Restorable
+   *  entries are, by definition, NOT running, so switching them harms no session
+   *  — this is how "change the engine and the whole office follows" reaches the
+   *  planets that are asleep when the switch happens. Identity, cwd and any
+   *  worktree are left alone: only the engine fields move. */
+  retargetRestorableEngine: (engine: {
+    command: string;
+    provider: AgentProvider;
+    model?: string;
+  }) => void;
   reorderAgents: (fromId: string, toId: string) => void; // move agent fromId into toId's slot (AgentStrip drag-reorder) and persist the new order
   /** One-shot request to open a Command-Center tab (e.g. clicking the office
    *  task board → 'tasks'). `seq` makes repeated identical requests distinct. */
@@ -845,6 +859,37 @@ export const useStore = create<State>((set, get) => ({
     set((s) => {
       if (!s.restorableAgents.some((a) => a.id === id)) return s;
       const restorableAgents = s.restorableAgents.filter((a) => a.id !== id);
+      persistRestorable(restorableAgents);
+      return { restorableAgents };
+    }),
+  retargetRestorableEngine: (engine) =>
+    set((s) => {
+      let changed = false;
+      const restorableAgents = s.restorableAgents.map((a) => {
+        if (a.isGod || a.isAssistant) return a;
+        if (a.command === engine.command && a.provider === engine.provider && a.model === engine.model) {
+          return a;
+        }
+        changed = true;
+        return { ...a, command: engine.command, provider: engine.provider, model: engine.model };
+      });
+      if (!changed) return s;
+      persistRestorable(restorableAgents);
+      return { restorableAgents };
+    }),
+  seedRestorableAgents: (entries) =>
+    set((s) => {
+      // An id is active xor archived xor restorable — skip anything already
+      // accounted for anywhere, so seeding can never shadow a live planet or
+      // resurrect one the user deliberately archived.
+      const incoming = entries.filter(
+        (e) =>
+          !s.restorableAgents.some((r) => r.id === e.id) &&
+          !s.agents.some((a) => a.id === e.id) &&
+          !s.archivedAgents.some((a) => a.id === e.id)
+      );
+      if (!incoming.length) return s;
+      const restorableAgents = [...s.restorableAgents, ...incoming];
       persistRestorable(restorableAgents);
       return { restorableAgents };
     }),

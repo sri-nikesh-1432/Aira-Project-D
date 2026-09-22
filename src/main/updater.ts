@@ -343,10 +343,10 @@ async function runDownload(): Promise<{ ok: boolean; error?: string }> {
  *  shape instead (bold lead paragraph, then `### Fixed`) it returns ONE bullet —
  *  the lead paragraph, clipped mid-sentence. Verified against the published
  *  v0.4.4-rc.1 body: this shape yields the same 3 bullets the real toast shows. */
-const SIMULATED_NOTES = `# Munder Difflin v9.9.9
+const SIMULATED_NOTES = `# AIRA v9.9.9
 
-**A local hive of Claude Code, Antigravity, Codex, Grok & Copilot agents that run themselves** —
-messaging, routing, and remembering, coordinated by your clone, Michael, who you talk to.
+**A local hive of AI agent planets that run themselves** — messaging, routing, and remembering,
+coordinated by AIRA, the central intelligence you talk to.
 
 ---
 
@@ -358,8 +358,8 @@ its first newline.
 
 - **Agent-to-agent messaging works on Windows.** Prompt-carrying spawns now run the CLI's real
   interpreter directly instead of routing through \`cmd.exe\`, so the whole protocol survives.
-- **Setup can finish again.** Accepting the suggested \`~/HarnessAgents\` folder wrote a literal
-  \`~\`, and the wizard then died on \`ENOENT: mkdir '~/HarnessAgents'\`.
+- **Setup can finish again.** Accepting the suggested \`~/AIRAWorkspace\` folder wrote a literal
+  \`~\`, and the wizard then died on \`ENOENT: mkdir '~/AIRAWorkspace'\`.
 - **Copying from a terminal is clean.** The Edit menu was intercepting ⌘C before the terminal saw it.
 - **Agent terminals are UTF-8.** They ran with no locale at all.`;
 

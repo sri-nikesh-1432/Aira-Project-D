@@ -74,13 +74,13 @@ export function HivePicker({ config, onOpenCurrent }: HivePickerProps) {
       padding: 32
     }}>
       <div style={{ width: 560, maxWidth: '94vw' }}>
-        <PixelPanel variant="dialog" title="SELECT A HARNESS CONFIG" noPadding>
+        <PixelPanel variant="dialog" title="INITIALIZE DATTA" noPadding>
           <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <p style={{ margin: 0, fontSize: 12, lineHeight: '19px', color: 'var(--cth-ink-700)' }}>
-              A <strong>harness config</strong> is the folder where the app keeps everything for one
-              workspace — its settings, your agents and their memory, tasks, triggers, and history.
-              Each config is separate and self-contained, so you can run different setups side by side.
-              Open the one you were working in, switch to another, or start a new one.
+              The whole <strong>AIRA Network</strong> lives in one self-contained folder — a <strong>workspace</strong>.
+              It holds Datta's identity, the planets, their agents and memory, tasks, triggers, and history.
+              Each workspace is separate and self-contained, so you can run different setups side by side.
+              Open the one you were working in, switch to another, or initialize a new one.
             </p>
 
             {/* CURRENT — the last-used home, the one-click default. */}
@@ -167,12 +167,12 @@ export function HivePicker({ config, onOpenCurrent }: HivePickerProps) {
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
               <PixelButton variant="secondary" size="md" onClick={browse} disabled={!!busy}>
                 <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
-                  <Icon name="folder" /> open existing config…
+                  <Icon name="folder" /> open existing workspace…
                 </span>
               </PixelButton>
               <PixelButton variant="secondary" size="md" onClick={browse} disabled={!!busy}>
                 <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
-                  <Icon name="plus" /> create new config…
+                  <Icon name="plus" /> create new workspace…
                 </span>
               </PixelButton>
             </div>

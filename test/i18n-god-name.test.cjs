@@ -41,7 +41,7 @@ test('no locale hardcodes the orchestrator name', () => {
 test('the strings that talk about the orchestrator interpolate {{godName}}', () => {
   const en = flatten(locale('en'));
   // A representative spread: settings, command centre, onboarding, triggers.
-  for (const k of ['settings.connections.slackDesc', 'commandCenter.michaelDecides',
+  for (const k of ['settings.connections.slackDesc', 'commandCenter.airaDecides',
                    'onboarding.orchestrator.modelNote', 'triggerHistory.approveTitle',
                    'workersTab.liveIntro', 'kanban.newWorkHint']) {
     assert.ok(k in en, `${k} vanished from en.json`);

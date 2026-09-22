@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { join } from 'node:path';
+import { posix } from 'node:path';
 
 export const CODEX_REMOTE_SOCKET_RELATIVE =
   'app-server-control/app-server-control.sock';
@@ -20,7 +20,13 @@ export const CODEX_REMOTE_ALIAS_ROOT = '/tmp/mdc';
 export const CODEX_REMOTE_SOCKET_MAX = 104;
 
 /** Keep the CODEX_HOME spelling short enough for macOS's Unix-socket limit.
- *  `tempRoot` defaults to the short fixed root; callers may override it (tests). */
+ *  `tempRoot` defaults to the short fixed root; callers may override it (tests).
+ *
+ *  Joined with the POSIX path module deliberately: the ONLY call site is
+ *  enableCodexRemoteForSpawn, which is gated to `process.platform !== 'win32'`
+ *  (Codex's remote app-server is unix-socket-only), and a Windows `join` would
+ *  spell the alias with backslashes — wrong in the socket path AND in the shell
+ *  commands the alias rides into. Platform-consistent, not merely short. */
 export function codexRemoteAliasPath(
   realHome: string,
   agentId: string,
@@ -30,16 +36,17 @@ export function codexRemoteAliasPath(
     .update(`${realHome}\0${agentId}`)
     .digest('hex')
     .slice(0, 8);
-  return join(tempRoot, digest);
+  return posix.join(tempRoot, digest);
 }
 
-/** Whether a candidate home yields a control socket the platform can bind. */
+/** Whether a candidate home yields a control socket the platform can bind.
+ *  POSIX join — see codexRemoteAliasPath. */
 export function codexRemoteSocketFits(shortHome: string): boolean {
-  return join(shortHome, CODEX_REMOTE_SOCKET_RELATIVE).length < CODEX_REMOTE_SOCKET_MAX;
+  return posix.join(shortHome, CODEX_REMOTE_SOCKET_RELATIVE).length < CODEX_REMOTE_SOCKET_MAX;
 }
 
 export function codexRemoteEndpoint(shortHome: string): string {
-  return `unix://${join(shortHome, CODEX_REMOTE_SOCKET_RELATIVE)}`;
+  return `unix://${posix.join(shortHome, CODEX_REMOTE_SOCKET_RELATIVE)}`;
 }
 
 /** Global options must precede `resume`, so prepend the endpoint in all cases. */

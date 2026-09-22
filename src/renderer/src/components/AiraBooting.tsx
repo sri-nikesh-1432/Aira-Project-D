@@ -2,16 +2,16 @@ import { PixelPanel } from '@/components/PixelPanel';
 import { useResolvedGodName } from '@/hooks/useResolvedGodName';
 
 /**
- * Loader shown on the empty floor while the god agent is clocking in on
+ * Loader shown on the empty floor while AIRA is clocking in on
  * launch. Replaces the "add agent" prompt so a returning user doesn't see the
- * empty-floor call-to-action before god has booted.
+ * empty-floor call-to-action before AIRA has booted.
  *
- * Rendered while `agentCount === 0` — before the store has god's live agent
+ * Rendered while `agentCount === 0` — before the store has AIRA's live agent
  * object (and so before `agent.name` exists anywhere to read) — so this reads
  * the persisted name directly, the same way useHive.ts's spawn effect does,
  * rather than assuming the default.
  */
-export function MichaelBooting() {
+export function AiraBooting() {
   const godName = useResolvedGodName();
   return (
     <div style={{

@@ -5,6 +5,7 @@ import type { HarnessConfig } from '@/store/config';
 import { DEFAULT_ORG_TRIGGER } from '@shared/triggers';
 import { OfficeFloor } from '@/scene/office/OfficeFloor';
 import { useHive } from '@/hooks/useHive';
+import { useAiraRoster } from '@/hooks/useAiraRoster';
 import { useResolvedGodName } from '@/hooks/useResolvedGodName';
 import { useGodNameSync } from '@/i18n/useGodNameSync';
 import { useDirectionSync } from '@/i18n/useDirection';
@@ -13,7 +14,7 @@ import { MemoryPanel } from '@/components/MemoryPanel';
 import { AgentDetailPanel } from '@/components/AgentDetailPanel';
 import { AgentStrip } from '@/components/AgentStrip';
 import { AddAgentModal } from '@/components/AddAgentModal';
-import { MichaelBooting } from '@/components/MichaelBooting';
+import { AiraBooting } from '@/components/AiraBooting';
 import { OnboardingWizard } from '@/components/OnboardingWizard';
 import { HivePicker } from '@/components/HivePicker';
 import { QuitWarningModal, type ClosingTimeState } from '@/components/QuitWarningModal';
@@ -193,6 +194,10 @@ export function App() {
   // about to switch to a different one.
   useHive(hiveOpened ? config : null);
 
+  // The default AIRA roster: provision the nine planets onto a fresh, empty
+  // floor. Held off until a hive is open for the same reason useHive is.
+  useAiraRoster(hiveOpened ? config : null);
+
   // Pre-warm a persistent terminal for every live agent so its output is
   // buffered from spawn. Switching agents then re-attaches an already-rendered
   // terminal instantly (with full history) instead of building a blank one.
@@ -297,7 +302,7 @@ export function App() {
       >
         <img
           src={brandLogo}
-          alt="Munder Difflin"
+          alt="AIRA"
           style={{ height: 20, width: 'auto', display: 'block' }}
         />
         {/* v0.3.7: the version is no longer inert text — it doubles as the
@@ -401,7 +406,7 @@ export function App() {
         <div style={{ flex: 1, minHeight: 0, minWidth: 0, position: 'relative' }}>
           <OfficeFloor />
           <MemoryPanel />
-          {agentCount === 0 && godStatus === 'booting' && <MichaelBooting />}
+          {agentCount === 0 && godStatus === 'booting' && <AiraBooting />}
           {agentCount === 0 && godStatus !== 'booting' && (
             <div style={{
               position: 'absolute', inset: 0,
@@ -412,7 +417,8 @@ export function App() {
                 <PixelPanel variant="dialog" title="EMPTY FLOOR" noPadding>
                   <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <p style={{ margin: 0, fontSize: 13, lineHeight: '20px' }}>
-                      No agents on the floor yet. Spawn one to see real claude output stream in here.
+                      The floor is quiet. Ask AIRA for anything from the Command
+                      Center, or spawn an agent to watch it work.
                     </p>
                     <PixelButton variant="primary" size="md" onClick={() => setAddAgentOpen(true)}>
                       <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
@@ -449,8 +455,7 @@ export function App() {
                 color: 'var(--cth-ink-500)'
               }}>WAKING THE FLOOR</div>
               <p style={{ margin: 0, fontSize: 13, textAlign: 'center', color: 'var(--cth-ink-700)' }}>
-                {bootingGodName} is clocking in.<br />
-                The terminal will land here once he's seated.
+                {bootingGodName} is settling into the corner office and getting the floor<br />ready. Hang tight…
               </p>
             </PixelPanel>
           ) : (

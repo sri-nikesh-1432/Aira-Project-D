@@ -317,13 +317,15 @@ export function validateHireManifest(raw: unknown): HireValidation {
   };
 }
 
-/** Parse a `munderdifflin://hire?src=<https-url>` deep link. Returns the https
+/** Parse an `aira://hire?src=<https-url>` deep link. Returns the https
  *  manifest URL, or null if the link is not a well-formed hire link. */
 export function parseHireDeepLink(link: string): string | null {
   let u: URL;
   try { u = new URL(link); } catch { return null; }
-  if (u.protocol !== 'munderdifflin:') return null;
-  // Both munderdifflin://hire?src= (host) and munderdifflin:hire?src= (path).
+  // aira:// is the fork's scheme; munderdifflin:// links from before the
+  // rebrand keep working so old shares don't die.
+  if (u.protocol !== 'aira:' && u.protocol !== 'munderdifflin:') return null;
+  // Both aira://hire?src= (host) and aira:hire?src= (path).
   const action = (u.host || u.pathname.replace(/^\/+/, '')).toLowerCase();
   if (action !== 'hire') return null;
   const src = u.searchParams.get('src');

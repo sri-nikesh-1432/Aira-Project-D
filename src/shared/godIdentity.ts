@@ -1,6 +1,12 @@
 /** God's identity before anyone has customized it — the app's own default,
- *  not a magic string sprinkled at every spawn call site. */
-export const DEFAULT_GOD_NAME = 'Michael';
+ *  not a magic string sprinkled at every spawn call site.
+ *
+ *  AIRA. The orchestrator was previously shipped as "Michael"; its identity is
+ *  now AIRA, the central intelligence of the office (see `shared/planets.ts`
+ *  for the planet roster it directs). The durable agent id stays `'god'` — that
+ *  is Munder Difflin's registry key, and renaming it would strand every
+ *  existing hive's agents, tasks and memory. Identity changed, storage kept. */
+export const DEFAULT_GOD_NAME = 'AIRA';
 
 /**
  * Resolve god's display name for a (re)spawn.

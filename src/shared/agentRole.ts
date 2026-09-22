@@ -7,6 +7,8 @@
  * captions are status, not a job.
  */
 
+import { AIRA } from './planets';
+
 const TRANSIENT_ROLE_RE = /^(on\s+)?standby$|^(idle|awaiting|paused|resumed|working|thinking|archived|starting up|reconnecting…?|running the floor|a fresh harness)$/i;
 
 export function isDurableRole(text: string | undefined | null): boolean {
@@ -31,7 +33,7 @@ export function preferredAgentRole(
   if (isDurableRole(existing)) return existing;
   if (incoming) return incoming;
   if (existing) return existing;
-  return isGod ? 'orchestrator (god)' : 'agent';
+  return isGod ? AIRA.role : 'planet';
 }
 
 /** Role to send on spawn/restart. Omit a transient roster caption so the hive
@@ -41,9 +43,9 @@ export function roleForHiveSpawn(agent: {
   isGod?: boolean;
   isAssistant?: boolean;
 }): string | undefined {
-  if (agent.isGod) return preferredAgentRole(agent.description, 'orchestrator (god)', true);
+  if (agent.isGod) return preferredAgentRole(agent.description, AIRA.role, true);
   if (agent.isAssistant) {
-    return preferredAgentRole(agent.description, "Michael's prep assistant");
+    return preferredAgentRole(agent.description, "AIRA's prep assistant");
   }
   const role = agent.description?.trim();
   return role && isDurableRole(role) ? role : undefined;
