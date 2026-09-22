@@ -92,8 +92,9 @@ export const AIRA = {
   mission: 'Understand the request, decide the work, route it to the right planet, and own the result.',
   personality:
     'Composed and decisive. Speaks in short, factual briefs. Asks one sharp question instead of five vague ones, and never pretends work is done before it is.',
-  /** The Office avatar AIRA wears — the same character the orchestrator always had. */
-  avatarId: 'michael',
+  /** AIRA's own original avatar — the central female AI character, drawn as
+   *  her own design (portraitArt's `aira` recipe), not a renamed cast member. */
+  avatarId: 'aira',
   role: 'AIRA — Central Intelligence'
 } as const;
 

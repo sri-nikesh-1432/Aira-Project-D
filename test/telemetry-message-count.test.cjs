@@ -203,7 +203,7 @@ test('the renderer cannot name the event, only the surface', () => {
 test('the bridge takes a surface and nothing that could carry a message', () => {
   const sig = preload.match(/trackMessageSent: \(([^)]*)\)/);
   assert.ok(sig, 'preload must expose trackMessageSent');
-  assert.equal(sig[1], "surface: 'terminal' | 'composer'", 'one closed-enum argument, no text parameter');
+  assert.equal(sig[1], "surface: 'terminal' | 'composer' | 'aira-input'", 'one closed-enum argument, no text parameter');
 });
 
 test('a telemetry failure can never break sending a message', () => {

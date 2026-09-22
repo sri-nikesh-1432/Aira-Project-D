@@ -133,9 +133,10 @@ export type MessageSurface = typeof MESSAGE_SURFACES[number];
  *  `steer` and `hive` are counted in main, at the IPC handlers that already
  *  receive them, so the renderer must not be able to name those two — otherwise
  *  a future renderer call site could double-count a message main has already
- *  counted. `terminal` and `composer` are the only submits main cannot see for
- *  itself, so they are the only ones that cross the bridge. */
-const RENDERER_MESSAGE_SURFACES: ReadonlySet<string> = new Set<string>(['terminal', 'composer']);
+ *  counted. `terminal`, `composer` and `aira-input` (the floor's always-visible
+ *  ask-AIRA bar) are submits main cannot see for itself, so they are the ones
+ *  that cross the bridge. */
+const RENDERER_MESSAGE_SURFACES: ReadonlySet<string> = new Set<string>(['terminal', 'composer', 'aira-input']);
 
 /** Validate a surface arriving from the renderer. Everything crossing that seam
  *  is untrusted input, and `track()`'s allowlist filters property KEYS but not

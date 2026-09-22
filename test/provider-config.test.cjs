@@ -123,19 +123,20 @@ test('Command Center model choices round-trip provider and model', () => {
   assert.equal(decodeProviderModel('unknown:model'), null);
 });
 
-test('onboarding lists every engine — orchestrator-capable first, workers-only after, custom never', () => {
+test('onboarding lists every engine — free engines first, everything else workers-only, custom never', () => {
   // Issue #355: hiding Copilot from the onboarding engine step read as "not
-  // supported at all". The step now SHOWS inbox-less engines as disabled
-  // workers-only rows instead of omitting them, so the split must be exact:
-  // selectable = the god-eligible set, workersOnly = everything a worker can
-  // run but Michael cannot (custom stays hidden — it is not a preset engine).
+  // supported at all". The step SHOWS the non-selectable engines as disabled
+  // workers-only rows instead of omitting them. AIRA edit: the SELECTABLE set
+  // is now the free/local engine list (no sign-up, no API key as the primary
+  // experience); paid engines stay visible for workers-only hiring, and custom
+  // stays hidden — it is not a preset engine.
   const { eligible, workersOnly } = onboardingEngineChoices();
   assert.deepEqual(
     eligible.map((preset) => preset.id),
-    modelProvidersForAgent(true).map((preset) => preset.id),
-    'selectable rows are exactly the god-eligible engines, same order'
+    ['gemini', 'qwen', 'opencode', 'crush'],
+    'selectable rows are exactly the free/local engines, in preset order'
   );
-  assert.deepEqual(workersOnly.map((preset) => preset.id), ['kimi', 'copilot']);
+  assert.deepEqual(workersOnly.map((preset) => preset.id), ['claude', 'codex', 'grok', 'kimi', 'antigravity', 'pi', 'copilot', 'cursor']);
   assert.ok(!eligible.concat(workersOnly).some((preset) => preset.id === 'custom'));
 });
 

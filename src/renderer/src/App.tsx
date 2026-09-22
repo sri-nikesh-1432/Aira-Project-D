@@ -26,6 +26,7 @@ import { SettingsModal, type Section as SettingsSection } from '@/components/Set
 import { PixelPanel } from '@/components/PixelPanel';
 import { PixelButton } from '@/components/PixelButton';
 import { Icon } from '@/components/Icon';
+import { useTranslation } from 'react-i18next';
 import { SidebarSplitter } from '@/components/SidebarSplitter';
 import { acquireTerminal, notifyThemeChangeAll } from '@/components/terminalPool';
 import { FullscreenTerminal } from '@/components/FullscreenTerminal';
@@ -52,6 +53,7 @@ export function App() {
   const setAddAgentOpen = useStore(s => s.setAddAgentOpen);
   const clearPendingHires = useStore(s => s.clearPendingHires);
   const godStatus = useStore(s => s.godStatus);
+  const { t } = useTranslation();
   const fullscreenAgentId = useStore(s => s.fullscreenAgentId);
   const appThemeNow = useAppTheme();
   const sidebarWidth = useStore(s => s.sidebarWidth);
@@ -351,6 +353,28 @@ export function App() {
         </button>
         {/* v0.3.4: the IDE button moved to agent level — every agent's header
             (sidebar detail, god Command Center, fullscreen) carries it. */}
+        {/* ☰ Command Center — a small always-visible affordance, per the AIRA
+            layout: default screen stays the clean office; the power-user surface
+            is one click away and closes back to the floor. */}
+        <button
+          className="cth-titlebar-nodrag cth-tip"
+          onClick={() => {
+            const god = useStore.getState().agents.find((a) => a.isGod);
+            if (god) useStore.getState().select(god.id);
+          }}
+          data-tip={t('airaInput.commandCenterTip')}
+          aria-label={t('airaInput.commandCenterTip')}
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 28, height: 28, padding: 0,
+            background: 'var(--cth-paper-100)',
+            boxShadow: 'inset 0 0 0 1px var(--cth-ink-300)',
+            border: 'none', borderRadius: 2, cursor: 'pointer',
+            color: 'var(--cth-ink-900)', fontSize: 13, lineHeight: 1
+          }}
+        >
+          ☰
+        </button>
         <button
           className="cth-titlebar-nodrag cth-settings-btn cth-tip"
           onClick={() => { setSettingsSection(undefined); setSettingsOpen(true); }}
@@ -484,6 +508,18 @@ export function App() {
 
       <AgentStrip config={config} />
 
+      {/* THE ONE INPUT BOX — the product's front door. Sits under the floor so
+          the default screen is office + input; anything typed here goes to AIRA
+          herself, who analyzes it and decides what the planets do. Selecting an
+          agent still opens its full detail panel; this bar is the always-there
+          way to talk to her. */}
+      <AiraInputBar
+        onOpenCommandCenter={() => {
+          const god = useStore.getState().agents.find((a) => a.isGod);
+          if (god) useStore.getState().select(god.id);
+        }}
+      />
+
       {addAgentOpen && (
         <AddAgentModal
           onClose={closeAddAgentReview}
@@ -517,6 +553,75 @@ export function App() {
       {fullscreenAgentId && <FullscreenTerminal config={config} />}
       {ideOpen && <IdePanel />}
       <TaskDetailOverlay />
+    </div>
+  );
+}
+
+/* ── The one input box ─────────────────────────────────────────────────────
+   The AIRA layout: office on top, ONE input bar at the bottom. Whatever the
+   user types is enqueued straight to AIRA (the god agent) — she analyzes,
+   answers, or delegates to planets, which wake lazily on first assignment.
+   The ☰ button inside the bar opens the full Command Center (her detail
+   panel); the placeholder copy states the whole product in one line. */
+function AiraInputBar({ onOpenCommandCenter }: { onOpenCommandCenter: () => void }) {
+  const { t } = useTranslation();
+  const [draft, setDraft] = useState('');
+  const god = useStore((s) => s.agents.find((a) => a.isGod));
+  const enqueueMessage = useStore((s) => s.enqueueMessage);
+
+  const send = (): void => {
+    const body = draft.trim();
+    if (!body || !god) return;
+    enqueueMessage(god.id, body);
+    void window.cth.trackMessageSent('aira-input');
+    setDraft('');
+  };
+
+  return (
+    <div
+      className="cth-titlebar-nodrag"
+      style={{
+        flexShrink: 0,
+        margin: '0 16px 12px',
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '8px 12px',
+        background: 'var(--cth-paper-100)',
+        boxShadow: 'inset 0 0 0 2px var(--cth-ink-900)'
+      }}
+    >
+      <input
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) send(); }}
+        placeholder={t('airaInput.placeholder')}
+        aria-label={t('airaInput.placeholder')}
+        style={{
+          flex: 1, minWidth: 0,
+          fontFamily: 'var(--cth-font-ui)', fontSize: 14,
+          color: 'var(--cth-ink-900)', background: 'transparent',
+          border: 'none', outline: 'none'
+        }}
+      />
+      <button
+        onClick={onOpenCommandCenter}
+        className="cth-tip"
+        data-tip={t('airaInput.commandCenterTip')}
+        aria-label={t('airaInput.commandCenterTip')}
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 8px', background: 'transparent',
+          border: 'none', cursor: 'pointer',
+          fontFamily: 'var(--cth-font-display)', fontSize: 10,
+          color: 'var(--cth-ink-700)'
+        }}
+      >
+        ☰ {t('airaInput.commandCenter')}
+      </button>
+      <PixelButton variant="primary" size="md" onClick={send} disabled={!draft.trim() || !god}>
+        <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+          {t('airaInput.send')} <Icon name="arrow-right" />
+        </span>
+      </PixelButton>
     </div>
   );
 }

@@ -360,19 +360,30 @@ export function modelProvidersForAgent(isGod = false) {
   );
 }
 
+/** The engines the FIRST-RUN provider picker offers: free / local CLIs only.
+ *  AIRA's onboarding promise is no paid subscriptions, no sign-up, no API-key
+ *  wall — pick an engine that runs locally and go. OpenCode and Qwen (local
+ *  proxy) self-install; Gemini CLI and Crush are free-to-run local CLIs. Paid /
+ *  credit-metered engines (Claude Code, Codex, Cursor, Copilot, Grok, Kimi,
+ *  Antigravity, pi) stay fully supported for hiring workers later — they are
+ *  just not the front door. */
+export const AIRA_FREE_ENGINE_IDS: readonly AgentProvider[] =
+  ['opencode', 'qwen', 'gemini', 'crush'] as const;
+
 /** The onboarding engine step's two groups (issue #355). Hiding inbox-less
  *  engines there read as "Copilot isn't supported at all", when the truth is
  *  narrower: a print-mode / bridge-less CLI can be HIRED as a worker but cannot
- *  run Michael, because the orchestrator must drain hive mail. So the step now
- *  shows those engines too, as disabled workers-only rows — same god-eligible
- *  set as `modelProvidersForAgent(true)` for the selectable group, and every
- *  other preset except `custom` (bring-your-own command, not an engine) in the
- *  disabled group. */
+ *  run the orchestrator, because it must drain hive mail. So the step shows
+ *  the remaining engines too, as disabled workers-only rows. AIRA edit: the
+ *  SELECTABLE group is the free/local engine set above; everything else is
+ *  visible but not offered as the primary path. */
 export function onboardingEngineChoices(): {
   eligible: AgentProviderPreset[];
   workersOnly: AgentProviderPreset[];
 } {
-  const eligible = modelProvidersForAgent(true);
+  const eligible = AGENT_PROVIDER_PRESETS.filter(
+    (preset) => (AIRA_FREE_ENGINE_IDS as readonly string[]).includes(preset.id)
+  );
   const workersOnly = AGENT_PROVIDER_PRESETS.filter(
     (preset) => preset.id !== 'custom' && !eligible.includes(preset)
   );

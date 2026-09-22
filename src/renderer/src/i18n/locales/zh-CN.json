@@ -405,6 +405,12 @@
       "subtitle": "用自然语言与 {{name}} 交流——她会回答、执行，或把工作分派给合适的星球。行星按需唤醒，接到工作才启动。",
       "openTerminal": "打开终端"
     },
+    "airaInput": {
+      "placeholder": "让 AIRA 构建、研究、分析、修复、创作……",
+      "send": "发送",
+      "commandCenter": "指挥中心",
+      "commandCenterTip": "打开指挥中心"
+    },
     "terminalFullscreen": "终端已全屏打开。按 Esc 返回。",
     "noTerminal": "{{name}} 没有实时终端。",
     "dispatchViaAira": "派发——经由 {{godName}}",
@@ -662,8 +668,8 @@
     "orchestrator": {
       "descPlain": "{{godName}} 就是你的克隆——她读取你的请求，拆成任务，分给合适的智能体。她是楼层的老板；而你仍然是她的老板。选择用什么 AI 引擎驱动她。",
       "desc": "{{godName}} 就是你的克隆——你刚认识的那层楼的老板。她分流你的请求、分配任务、管理团队，同时把真正需要你的情况升级上来。选择驱动她的引擎和模型；给她一个更长上下文、更强能力的模型。",
-      "cliAgentPlain": "一个<strong>CLI 智能体</strong>是运行在你电脑上的 AI 编程助手 —— 常见的有 Claude Code（Anthropic）、Codex（OpenAI）和 Antigravity（Google Gemini）。<strong>你的克隆体</strong>是常驻运行、打理整个办公室的那一个。我们推荐使用 Opus 4.8（1M）的 Claude Code。其他引擎之后可以随时添加或切换。",
-      "cliAgent": "每个选项都是一个<strong>CLI 引擎</strong>（Claude Code、Codex、Antigravity/Gemini，或本地代理如 Qwen）。标记为 INSTALLED 的引擎已在本机就绪；INSTALLS ON FIRST RUN 表示应用会在 {{godName}} 首次启动时进行安装。<strong>你的克隆体</strong>（{{godName}}）是统筹整个 hive 的引擎。推荐：Claude Code · Opus 4.8 · 1M。其他提供方之后可按智能体逐一接入。",
+      "cliAgentPlain": "<strong>CLI 引擎</strong>是在你电脑后台运行的 AI —— AIRA 替你使用它，你完全不需要碰终端。这里的选项都是<strong>免费或本地</strong>的；无需注册，也无需粘贴 API 密钥。首次运行时 AIRA 可以帮你自动安装。",
+      "cliAgent": "每个选项都是一个<strong>免费或本地引擎</strong>——无需注册、无需 API 密钥、无需订阅。标记为 INSTALLED 的引擎已在本机就绪；INSTALLS ON FIRST RUN 表示 AIRA 会为你自动安装。<strong>AIRA</strong>（{{godName}}）运行在你选择的引擎上，统筹整个 AIRA 网络。付费引擎之后仍可按智能体逐一接入。",
       "recommended": "推荐",
       "workersOnly": "仅限雇员",
       "workersOnlyHint": "暂时无法接收蜂巢邮件，因此不能运行你的分身——但雇佣工作智能体时仍然可用。",

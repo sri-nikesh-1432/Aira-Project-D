@@ -103,7 +103,9 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   // Anonymous usage stats (TELEMETRY.md). Default ON (opt-out); persisted by
   // finish() so unchecking before finishing means nothing is ever sent.
   const [shareStats, setShareStats] = useState<boolean>(true);
-  const [godProvider, setGodProvider] = useState<AgentProvider>('claude');
+  // AIRA's free-first default: OpenCode self-installs on first run and is fully
+  // hive-aware, so the office works with zero paid subscriptions and no API key.
+  const [godProvider, setGodProvider] = useState<AgentProvider>('opencode');
   const [godModel, setGodModel] = useState<string | undefined>(
     providerPreset('claude').recommendedOrchestratorModel
   );
@@ -404,21 +406,19 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                   <span>
                     {plain ? (
                       <Trans i18nKey="onboarding.orchestrator.cliAgentPlain" components={{ strong: <strong /> }}>
-                        A <strong>CLI agent</strong> is an AI coding assistant that runs on your
-                        computer — popular ones are Claude Code (Anthropic), Codex (OpenAI) and
-                        Antigravity (Google Gemini). <strong>Your clone</strong> is the always-on
-                        one that runs your whole office. We recommend Claude Code on Opus 4.8 (1M).
-                        You can add or switch the others later.
+                        A <strong>CLI engine</strong> is the AI that runs on your computer under
+                        the hood — AIRA uses it so you never have to touch a terminal. The options
+                        here are <strong>free or local</strong>; nothing to sign up for and no API
+                        key to paste. AIRA can install one for you on first run.
                       </Trans>
                     ) : (
                       <Trans i18nKey="onboarding.orchestrator.cliAgent" components={{ strong: <strong /> }}>
-                        Each option is a <strong>CLI engine</strong> (Claude Code, Codex,
-                        Antigravity/Gemini, or a local proxy like Qwen). Engines marked
-                        INSTALLED are already on this machine; INSTALLS ON FIRST RUN means the app
-                        sets it up when AIRA first starts.
-                        <strong> AIRA</strong> ({godName}) is the engine that orchestrates the whole
-                        office. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired
-                        per agent later.
+                        Each option is a <strong>free or local engine</strong> — no sign-up, no API
+                        key, no subscription. Engines marked INSTALLED are already on this machine;
+                        INSTALLS ON FIRST RUN means AIRA sets it up for you automatically.
+                        <strong> AIRA</strong> ({godName}) runs on whichever one you pick and
+                        orchestrates the whole office. Paid engines can still be wired to
+                        individual workers later.
                       </Trans>
                     )}
                   </span>

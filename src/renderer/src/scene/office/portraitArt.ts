@@ -491,6 +491,11 @@ function drawHeavyFace(buf: Buf, skin: string): void {
 }
 
 const RECIPES: Record<OfficeCharacterName, Recipe> = {
+  // AIRA — original central-intelligence design. Long dark-auburn hair, magenta
+  // blouse, lashes + blush: unmistakably her own character, not a renamed cast
+  // member. Drawn with the same recipe system as everyone else so both the
+  // static portrait and the walking scene sprite come out for free.
+  aira:     { skin: 'light', hairc: [74, 26, 46],    hair: 'styleFrame',  hairargs: { length: 22, vol: 3 }, cloth: 'blouse', c1: [176, 54, 110], c2: [244, 241, 234], brow: 'soft', mouth: 'smile', blush: true, lashes: true },
   michael:  { skin: 'light', hairc: [58, 42, 28],   hair: 'styleShort',  hairargs: { part: 'L' }, cloth: 'suit', c1: [58, 63, 74], tie: [170, 58, 58], brow: 'flat', mouth: 'smile' },
   jim:      { skin: 'light', hairc: [92, 60, 34],   hair: 'styleFloppy', cloth: 'dressshirt', c1: [172, 196, 224], tie: [120, 130, 150], brow: 'flat', mouth: 'smile' },
   pam:      { skin: 'light', hairc: [120, 76, 42],  hair: 'styleFrame',  hairargs: { length: 18, vol: 2 }, cloth: 'cardigan', c1: [236, 174, 192], c2: [244, 242, 238], brow: 'soft', mouth: 'smile', blush: true, lashes: true },

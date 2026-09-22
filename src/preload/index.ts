@@ -573,7 +573,7 @@ const api = {
    *  accepts only 'terminal' and 'composer' here (steer and hive are counted in
    *  main, at their own handlers). Never awaited by callers and never allowed to
    *  throw: a telemetry hiccup must not break sending a message. */
-  trackMessageSent: (surface: 'terminal' | 'composer'): Promise<void> =>
+  trackMessageSent: (surface: 'terminal' | 'composer' | 'aira-input'): Promise<void> =>
     ipcRenderer.invoke('analytics:messageSent', surface).then(() => undefined, () => undefined),
 
   // ─── PTY ─────────────────────────────────────────────────────────────────

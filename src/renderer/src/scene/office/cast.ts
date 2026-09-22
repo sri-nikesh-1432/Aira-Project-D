@@ -22,6 +22,7 @@ import { AIRA, planetByAvatar, type PlanetConfig } from '@shared/planets';
 import { paintPortrait, sceneFrameBufs, SCENE_W, SCENE_H } from './portraitArt';
 
 export type OfficeCharacterName =
+  | 'aira'
   | 'michael' | 'jim' | 'pam' | 'dwight' | 'kevin' | 'angela'
   | 'oscar' | 'stanley' | 'phyllis' | 'andy' | 'kelly' | 'ryan'
   | 'toby' | 'creed' | 'meredith';
@@ -46,6 +47,10 @@ export interface CastMember {
 
 /** Shirts + the original Munder Difflin labels, in display order. */
 const AVATARS: Array<{ name: OfficeCharacterName; legacyName: string; shirt: string }> = [
+  // AIRA is her OWN character — an original design, not a renamed cast member.
+  // She is the central female AI of the office; the old 'michael' avatar stays
+  // in the roster only so legacy hives that saved it keep rendering.
+  { name: 'aira',     legacyName: 'AIRA',     shirt: '#b0366e' },
   { name: 'michael',  legacyName: 'Michael',  shirt: '#5a6b8c' },
   { name: 'jim',      legacyName: 'Jim',      shirt: '#6fa8dc' },
   { name: 'pam',      legacyName: 'Pam',      shirt: '#9caf88' },

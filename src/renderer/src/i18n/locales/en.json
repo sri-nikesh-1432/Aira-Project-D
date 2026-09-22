@@ -405,6 +405,12 @@
       "subtitle": "Talk to {{name}} in plain language — she answers, acts, or delegates to the right planet. Planets wake on demand when work reaches them.",
       "openTerminal": "open terminal"
     },
+    "airaInput": {
+      "placeholder": "Ask AIRA to build, research, analyze, fix, create…",
+      "send": "Send",
+      "commandCenter": "Command Center",
+      "commandCenterTip": "Open the Command Center"
+    },
     "terminalFullscreen": "Terminal is open in fullscreen. Press Esc to bring it back.",
     "noTerminal": "{{name}} has no live terminal.",
     "dispatchViaAira": "DISPATCH — VIA {{godName}}",
@@ -662,8 +668,8 @@
     "orchestrator": {
       "descPlain": "{{godName}} is AIRA — it reads your requests, breaks them into tasks, and hands them to the right planet. It runs the floor; you are still the boss of it. Choose which AI engine powers it.",
       "desc": "{{godName}} is AIRA — the central intelligence of the floor you just met. It triages your requests, assigns work to the planets, and manages the team, while escalating anything that genuinely needs you. Pick the engine and model that power it; give it a longer-context, higher-capability model.",
-      "cliAgentPlain": "A <strong>CLI agent</strong> is an AI coding assistant that runs on your computer — popular ones are Claude Code (Anthropic), Codex (OpenAI) and Antigravity (Google Gemini). <strong>AIRA</strong> is the always-on one that runs your whole office. We recommend Claude Code on Opus 4.8 (1M). You can add or switch the others later.",
-      "cliAgent": "Each option is a <strong>CLI engine</strong> (Claude Code, Codex, Antigravity/Gemini, or a local proxy like Qwen). Engines marked INSTALLED are already on this machine; INSTALLS ON FIRST RUN means the app sets it up when {{godName}} first starts. <strong>AIRA</strong> ({{godName}}) is the engine that orchestrates the whole AIRA Network. Recommended: Claude Code · Opus 4.8 · 1M. Other providers can be wired per agent later.",
+      "cliAgentPlain": "A <strong>CLI engine</strong> is the AI that runs on your computer under the hood — AIRA uses it so you never have to touch a terminal. The options here are <strong>free or local</strong>; nothing to sign up for and no API key to paste. AIRA can install one for you on first run.",
+      "cliAgent": "Each option is a <strong>free or local engine</strong> — no sign-up, no API key, no subscription. Engines marked INSTALLED are already on this machine; INSTALLS ON FIRST RUN means AIRA sets it up for you automatically. <strong>AIRA</strong> ({{godName}}) runs on whichever one you pick and orchestrates the whole AIRA Network. Paid engines can still be wired to individual workers later.",
       "recommended": "RECOMMENDED",
       "workersOnly": "WORKERS ONLY",
       "workersOnlyHint": "Can't drain AIRA Network mail yet, so it can't run AIRA — still available when hiring workers.",
